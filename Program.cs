@@ -41,13 +41,14 @@
             unsafe
             {
                 ulong written = 0;
-                byte[] buffer = new byte[100];
-                fixed(byte* bufferPtr = buffer)
+                sbyte[] buffer = new sbyte[100];
+                fixed(sbyte* bufferPtr = buffer)
                 {
                     result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, (ulong)buffer.LongLength, ref written);
                     Debug.Assert(result == _JsErrorCode.JsNoError);
+
+                    strResult = new string(bufferPtr, 0 , (int)written);
                 }
-                strResult = System.Text.Encoding.UTF8.GetString(buffer, 0 , (int)written);
             }
 
             result = ChakraCommon.JsSetCurrentContext(IntPtr.Zero);

@@ -328,13 +328,12 @@ namespace ChakraSharp
         /// <param name="written">
         /// <para>Total number of characters written</para>
         /// </param>
-        public static _JsErrorCode JsCopyString(global::System.IntPtr value, byte* buffer, ulong bufferSize, ref ulong written)
+        public static _JsErrorCode JsCopyString(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, ref ulong written)
         {
-            var __arg1 = (sbyte*)buffer;
             fixed (ulong* __refParamPtr3 = &written)
             {
                 var __arg3 = __refParamPtr3;
-                var __ret = __Internal.JsCopyString_0(value, __arg1, bufferSize, __arg3);
+                var __ret = __Internal.JsCopyString_0(value, buffer, bufferSize, __arg3);
                 return __ret;
             }
         }
@@ -495,13 +494,12 @@ namespace ChakraSharp
         /// <param name="written">
         /// <para>Total number of characters written or to be written</para>
         /// </param>
-        public static _JsErrorCode JsCopyPropertyId(global::System.IntPtr propertyId, char* buffer, ulong bufferSize, ref ulong length)
+        public static _JsErrorCode JsCopyPropertyId(global::System.IntPtr propertyId, sbyte* buffer, ulong bufferSize, ref ulong length)
         {
-            var __arg1 = (sbyte*)buffer;
             fixed (ulong* __refParamPtr3 = &length)
             {
                 var __arg3 = __refParamPtr3;
-                var __ret = __Internal.JsCopyPropertyId_0(propertyId, __arg1, bufferSize, __arg3);
+                var __ret = __Internal.JsCopyPropertyId_0(propertyId, buffer, bufferSize, __arg3);
                 return __ret;
             }
         }
