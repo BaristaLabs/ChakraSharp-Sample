@@ -41,7 +41,17 @@
             unsafe
             {
                 ulong written = 0;
-                sbyte[] buffer = new sbyte[100];
+                sbyte[] buffer = new sbyte[0];
+                ulong targetLength;
+                fixed (sbyte* bufferPtr = buffer)
+                {
+                    result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, 0, ref written);
+                    Debug.Assert(result == _JsErrorCode.JsNoError);
+                    targetLength = written;
+                }
+
+                buffer = new sbyte[targetLength];
+
                 fixed (sbyte* bufferPtr = buffer)
                 {
                     result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, (ulong)buffer.LongLength, ref written);
