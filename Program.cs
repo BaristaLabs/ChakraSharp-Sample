@@ -42,12 +42,12 @@
             {
                 ulong written = 0;
                 sbyte[] buffer = new sbyte[100];
-                fixed(sbyte* bufferPtr = buffer)
+                fixed (sbyte* bufferPtr = buffer)
                 {
                     result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, (ulong)buffer.LongLength, ref written);
                     Debug.Assert(result == _JsErrorCode.JsNoError);
 
-                    strResult = new string(bufferPtr, 0 , (int)written);
+                    strResult = new string(bufferPtr, 0, (int)written);
                 }
             }
 
