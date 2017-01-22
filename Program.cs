@@ -40,12 +40,12 @@
             string strResult;
             unsafe
             {
-                ulong written = 0;
+                uint written;
                 sbyte[] buffer = new sbyte[0];
                 ulong targetLength;
                 fixed (sbyte* bufferPtr = buffer)
                 {
-                    result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, 0, ref written);
+                    result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, 0, out written);
                     Debug.Assert(result == _JsErrorCode.JsNoError);
                     targetLength = written;
                 }
@@ -54,7 +54,7 @@
 
                 fixed (sbyte* bufferPtr = buffer)
                 {
-                    result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, (ulong)buffer.LongLength, ref written);
+                    result = ChakraCore.JsCopyString(stringResultPtr, bufferPtr, (ulong)buffer.LongLength, out written);
                     Debug.Assert(result == _JsErrorCode.JsNoError);
 
                     strResult = new string(bufferPtr, 0, (int)written);

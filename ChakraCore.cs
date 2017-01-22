@@ -77,17 +77,17 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsInitializeModuleRecord")]
-            internal static extern _JsErrorCode JsInitializeModuleRecord_0(global::System.IntPtr referencingModule, global::System.IntPtr normalizedSpecifier, global::System.IntPtr moduleRecord);
+            internal static extern _JsErrorCode JsInitializeModuleRecord_0(global::System.IntPtr referencingModule, global::System.IntPtr normalizedSpecifier, global::System.IntPtr* moduleRecord);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsParseModuleSource")]
-            internal static extern _JsErrorCode JsParseModuleSource_0(global::System.IntPtr requestModule, ulong sourceContext, byte* script, uint scriptLength, JsParseModuleSourceFlags sourceFlag, global::System.IntPtr exceptionValueRef);
+            internal static extern _JsErrorCode JsParseModuleSource_0(global::System.IntPtr requestModule, ulong sourceContext, byte* script, uint scriptLength, JsParseModuleSourceFlags sourceFlag, global::System.IntPtr* exceptionValueRef);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsModuleEvaluation")]
-            internal static extern _JsErrorCode JsModuleEvaluation_0(global::System.IntPtr requestModule, global::System.IntPtr result);
+            internal static extern _JsErrorCode JsModuleEvaluation_0(global::System.IntPtr requestModule, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -97,7 +97,7 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsGetModuleHostInfo")]
-            internal static extern _JsErrorCode JsGetModuleHostInfo_0(global::System.IntPtr requestModule, JsModuleHostInfoKind moduleHostInfo, void** hostInfo);
+            internal static extern _JsErrorCode JsGetModuleHostInfo_0(global::System.IntPtr requestModule, JsModuleHostInfoKind moduleHostInfo, global::System.IntPtr* hostInfo);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -112,12 +112,12 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsCopyString")]
-            internal static extern _JsErrorCode JsCopyString_0(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, ulong* written);
+            internal static extern _JsErrorCode JsCopyString_0(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, uint* written);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsCopyStringUtf16")]
-            internal static extern _JsErrorCode JsCopyStringUtf16_0(global::System.IntPtr value, int start, int length, ushort* buffer, ulong* written);
+            internal static extern _JsErrorCode JsCopyStringUtf16_0(global::System.IntPtr value, int start, int length, ushort* buffer, uint* written);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -137,7 +137,7 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsCopyPropertyId")]
-            internal static extern _JsErrorCode JsCopyPropertyId_0(global::System.IntPtr propertyId, short* buffer, ulong bufferSize, uint* length);
+            internal static extern _JsErrorCode JsCopyPropertyId_0(global::System.IntPtr propertyId, sbyte* buffer, ulong bufferSize, uint* length);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -170,9 +170,12 @@ namespace ChakraSharp
         /// <param name="moduleRecord">
         /// <para>The new ModuleRecord created. The host should not try to call this API twice with the same normalizedSpecifier. chakra will return an existing ModuleRecord if the specifier was passed in before.</para>
         /// </param>
-        public static _JsErrorCode JsInitializeModuleRecord(global::System.IntPtr referencingModule, global::System.IntPtr normalizedSpecifier, global::System.IntPtr moduleRecord)
+        public static _JsErrorCode JsInitializeModuleRecord(global::System.IntPtr referencingModule, global::System.IntPtr normalizedSpecifier, out global::System.IntPtr moduleRecord)
         {
-            var __ret = __Internal.JsInitializeModuleRecord_0(referencingModule, normalizedSpecifier, moduleRecord);
+            global::System.IntPtr _moduleRecord;
+            var __arg2 = &_moduleRecord;
+            var __ret = __Internal.JsInitializeModuleRecord_0(referencingModule, normalizedSpecifier, __arg2);
+            moduleRecord = _moduleRecord;
             return __ret;
         }
 
@@ -200,9 +203,12 @@ namespace ChakraSharp
         /// <param name="exceptionValueRef">
         /// <para>The error object if there is parse error.</para>
         /// </param>
-        public static _JsErrorCode JsParseModuleSource(global::System.IntPtr requestModule, ulong sourceContext, byte* script, uint scriptLength, JsParseModuleSourceFlags sourceFlag, global::System.IntPtr exceptionValueRef)
+        public static _JsErrorCode JsParseModuleSource(global::System.IntPtr requestModule, ulong sourceContext, byte* script, uint scriptLength, JsParseModuleSourceFlags sourceFlag, out global::System.IntPtr exceptionValueRef)
         {
-            var __ret = __Internal.JsParseModuleSource_0(requestModule, sourceContext, script, scriptLength, sourceFlag, exceptionValueRef);
+            global::System.IntPtr _exceptionValueRef;
+            var __arg5 = &_exceptionValueRef;
+            var __ret = __Internal.JsParseModuleSource_0(requestModule, sourceContext, script, scriptLength, sourceFlag, __arg5);
+            exceptionValueRef = _exceptionValueRef;
             return __ret;
         }
 
@@ -220,9 +226,12 @@ namespace ChakraSharp
         /// <param name="result">
         /// <para>The return value of the module.</para>
         /// </param>
-        public static _JsErrorCode JsModuleEvaluation(global::System.IntPtr requestModule, global::System.IntPtr result)
+        public static _JsErrorCode JsModuleEvaluation(global::System.IntPtr requestModule, out global::System.IntPtr result)
         {
-            var __ret = __Internal.JsModuleEvaluation_0(requestModule, result);
+            global::System.IntPtr _result;
+            var __arg1 = &_result;
+            var __ret = __Internal.JsModuleEvaluation_0(requestModule, __arg1);
+            result = _result;
             return __ret;
         }
 
@@ -256,9 +265,12 @@ namespace ChakraSharp
         /// <param name="hostInfo">
         /// <para>The host info to be retrieved.</para>
         /// </param>
-        public static _JsErrorCode JsGetModuleHostInfo(global::System.IntPtr requestModule, JsModuleHostInfoKind moduleHostInfo, void** hostInfo)
+        public static _JsErrorCode JsGetModuleHostInfo(global::System.IntPtr requestModule, JsModuleHostInfoKind moduleHostInfo, out global::System.IntPtr hostInfo)
         {
-            var __ret = __Internal.JsGetModuleHostInfo_0(requestModule, moduleHostInfo, hostInfo);
+            global::System.IntPtr _hostInfo;
+            var __arg2 = &_hostInfo;
+            var __ret = __Internal.JsGetModuleHostInfo_0(requestModule, moduleHostInfo, __arg2);
+            hostInfo = _hostInfo;
             return __ret;
         }
 
@@ -334,9 +346,9 @@ namespace ChakraSharp
         /// <param name="written">
         /// <para>Total number of characters written</para>
         /// </param>
-        public static _JsErrorCode JsCopyString(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, ref ulong written)
+        public static _JsErrorCode JsCopyString(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, out uint written)
         {
-            fixed (ulong* __refParamPtr3 = &written)
+            fixed (uint* __refParamPtr3 = &written)
             {
                 var __arg3 = __refParamPtr3;
                 var __ret = __Internal.JsCopyString_0(value, buffer, bufferSize, __arg3);
@@ -373,12 +385,12 @@ namespace ChakraSharp
         /// <param name="written">
         /// <para>Total number of characters written</para>
         /// </param>
-        public static _JsErrorCode JsCopyStringUtf16(global::System.IntPtr value, int start, int length, ref ushort buffer, ref ulong written)
+        public static _JsErrorCode JsCopyStringUtf16(global::System.IntPtr value, int start, int length, ref ushort buffer, out uint written)
         {
             fixed (ushort* __refParamPtr3 = &buffer)
             {
                 var __arg3 = __refParamPtr3;
-                fixed (ulong* __refParamPtr4 = &written)
+                fixed (uint* __refParamPtr4 = &written)
                 {
                     var __arg4 = __refParamPtr4;
                     var __ret = __Internal.JsCopyStringUtf16_0(value, start, length, __arg3, __arg4);
@@ -509,17 +521,13 @@ namespace ChakraSharp
         /// <param name="written">
         /// <para>Total number of characters written or to be written</para>
         /// </param>
-        public static _JsErrorCode JsCopyPropertyId(global::System.IntPtr propertyId, out short buffer, ulong bufferSize, out uint length)
+        public static _JsErrorCode JsCopyPropertyId(global::System.IntPtr propertyId, sbyte* buffer, ulong bufferSize, out uint length)
         {
-            fixed (short* __refParamPtr1 = &buffer)
+            fixed (uint* __refParamPtr3 = &length)
             {
-                var __arg1 = __refParamPtr1;
-                fixed (uint* __refParamPtr3 = &length)
-                {
-                    var __arg3 = __refParamPtr3;
-                    var __ret = __Internal.JsCopyPropertyId_0(propertyId, __arg1, bufferSize, __arg3);
-                    return __ret;
-                }
+                var __arg3 = __refParamPtr3;
+                var __ret = __Internal.JsCopyPropertyId_0(propertyId, buffer, bufferSize, __arg3);
+                return __ret;
             }
         }
 
@@ -1404,27 +1412,27 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsGetTypedArrayInfo")]
-            internal static extern _JsErrorCode JsGetTypedArrayInfo_0(global::System.IntPtr typedArray, _JsTypedArrayType* arrayType, global::System.IntPtr arrayBuffer, uint* byteOffset, uint* byteLength);
+            internal static extern _JsErrorCode JsGetTypedArrayInfo_0(global::System.IntPtr typedArray, _JsTypedArrayType* arrayType, global::System.IntPtr* arrayBuffer, uint* byteOffset, uint* byteLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsGetArrayBufferStorage")]
-            internal static extern _JsErrorCode JsGetArrayBufferStorage_0(global::System.IntPtr arrayBuffer, byte* buffer, uint* bufferLength);
+            internal static extern _JsErrorCode JsGetArrayBufferStorage_0(global::System.IntPtr arrayBuffer, global::System.IntPtr* buffer, uint* bufferLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsGetTypedArrayStorage")]
-            internal static extern _JsErrorCode JsGetTypedArrayStorage_0(global::System.IntPtr typedArray, byte* buffer, uint* bufferLength, _JsTypedArrayType* arrayType, int* elementSize);
+            internal static extern _JsErrorCode JsGetTypedArrayStorage_0(global::System.IntPtr typedArray, global::System.IntPtr* buffer, uint* bufferLength, _JsTypedArrayType* arrayType, int* elementSize);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsGetDataViewStorage")]
-            internal static extern _JsErrorCode JsGetDataViewStorage_0(global::System.IntPtr dataView, byte* buffer, uint* bufferLength);
+            internal static extern _JsErrorCode JsGetDataViewStorage_0(global::System.IntPtr dataView, global::System.IntPtr* buffer, uint* bufferLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsCallFunction")]
-            internal static extern _JsErrorCode JsCallFunction_0(global::System.IntPtr function, global::System.IntPtr arguments, ushort argumentCount, global::System.IntPtr result);
+            internal static extern _JsErrorCode JsCallFunction_0(global::System.IntPtr function, global::System.IntPtr arguments, ushort argumentCount, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -1705,7 +1713,7 @@ namespace ChakraSharp
         /// <param name="count">
         /// <para>The object's new reference count (can pass in null).</para>
         /// </param>
-        public static _JsErrorCode JsAddRef(global::System.IntPtr @ref, ref uint count)
+        public static _JsErrorCode JsAddRef(global::System.IntPtr @ref, out uint count)
         {
             fixed (uint* __refParamPtr1 = &count)
             {
@@ -1727,7 +1735,7 @@ namespace ChakraSharp
         /// <param name="count">
         /// <para>The object's new reference count (can pass in null).</para>
         /// </param>
-        public static _JsErrorCode JsRelease(global::System.IntPtr @ref, ref uint count)
+        public static _JsErrorCode JsRelease(global::System.IntPtr @ref, out uint count)
         {
             fixed (uint* __refParamPtr1 = &count)
             {
@@ -1894,7 +1902,7 @@ namespace ChakraSharp
         /// <param name="nextIdleTick">
         /// <para>The next system tick when there will be more idle work to do. Can be null. Returns the maximum number of ticks if there no upcoming idle work to do.</para>
         /// </param>
-        public static _JsErrorCode JsIdle(ref uint nextIdleTick)
+        public static _JsErrorCode JsIdle(out uint nextIdleTick)
         {
             fixed (uint* __refParamPtr0 = &nextIdleTick)
             {
@@ -3087,15 +3095,21 @@ namespace ChakraSharp
         /// <param name="byteLength">
         /// <para>The number of bytes in the array.</para>
         /// </param>
-        public static _JsErrorCode JsGetTypedArrayInfo(global::System.IntPtr typedArray, _JsTypedArrayType* arrayType, global::System.IntPtr arrayBuffer, ref uint byteOffset, ref uint byteLength)
+        public static _JsErrorCode JsGetTypedArrayInfo(global::System.IntPtr typedArray, out _JsTypedArrayType arrayType, out global::System.IntPtr arrayBuffer, out uint byteOffset, out uint byteLength)
         {
+            _JsTypedArrayType _arrayType;
+            var __arg1 = &_arrayType;
+            global::System.IntPtr _arrayBuffer;
+            var __arg2 = &_arrayBuffer;
             fixed (uint* __refParamPtr3 = &byteOffset)
             {
                 var __arg3 = __refParamPtr3;
                 fixed (uint* __refParamPtr4 = &byteLength)
                 {
                     var __arg4 = __refParamPtr4;
-                    var __ret = __Internal.JsGetTypedArrayInfo_0(typedArray, arrayType, arrayBuffer, __arg3, __arg4);
+                    var __ret = __Internal.JsGetTypedArrayInfo_0(typedArray, __arg1, __arg2, __arg3, __arg4);
+                    arrayType = _arrayType;
+                    arrayBuffer = _arrayBuffer;
                     return __ret;
                 }
             }
@@ -3113,12 +3127,15 @@ namespace ChakraSharp
         /// <param name="bufferLength">
         /// <para>The number of bytes in the buffer.</para>
         /// </param>
-        public static _JsErrorCode JsGetArrayBufferStorage(global::System.IntPtr arrayBuffer, byte* buffer, out uint bufferLength)
+        public static _JsErrorCode JsGetArrayBufferStorage(global::System.IntPtr arrayBuffer, out global::System.IntPtr buffer, out uint bufferLength)
         {
+            global::System.IntPtr _buffer;
+            var __arg1 = &_buffer;
             fixed (uint* __refParamPtr2 = &bufferLength)
             {
                 var __arg2 = __refParamPtr2;
-                var __ret = __Internal.JsGetArrayBufferStorage_0(arrayBuffer, buffer, __arg2);
+                var __ret = __Internal.JsGetArrayBufferStorage_0(arrayBuffer, __arg1, __arg2);
+                buffer = _buffer;
                 return __ret;
             }
         }
@@ -3141,15 +3158,21 @@ namespace ChakraSharp
         /// <param name="elementSize">
         /// <para>The size of an element of the array.</para>
         /// </param>
-        public static _JsErrorCode JsGetTypedArrayStorage(global::System.IntPtr typedArray, byte* buffer, out uint bufferLength, _JsTypedArrayType* arrayType, ref int elementSize)
+        public static _JsErrorCode JsGetTypedArrayStorage(global::System.IntPtr typedArray, out global::System.IntPtr buffer, out uint bufferLength, out _JsTypedArrayType arrayType, out int elementSize)
         {
+            global::System.IntPtr _buffer;
+            var __arg1 = &_buffer;
             fixed (uint* __refParamPtr2 = &bufferLength)
             {
                 var __arg2 = __refParamPtr2;
+                _JsTypedArrayType _arrayType;
+                var __arg3 = &_arrayType;
                 fixed (int* __refParamPtr4 = &elementSize)
                 {
                     var __arg4 = __refParamPtr4;
-                    var __ret = __Internal.JsGetTypedArrayStorage_0(typedArray, buffer, __arg2, arrayType, __arg4);
+                    var __ret = __Internal.JsGetTypedArrayStorage_0(typedArray, __arg1, __arg2, __arg3, __arg4);
+                    buffer = _buffer;
+                    arrayType = _arrayType;
                     return __ret;
                 }
             }
@@ -3167,12 +3190,15 @@ namespace ChakraSharp
         /// <param name="bufferLength">
         /// <para>The number of bytes in the buffer.</para>
         /// </param>
-        public static _JsErrorCode JsGetDataViewStorage(global::System.IntPtr dataView, byte* buffer, out uint bufferLength)
+        public static _JsErrorCode JsGetDataViewStorage(global::System.IntPtr dataView, out global::System.IntPtr buffer, out uint bufferLength)
         {
+            global::System.IntPtr _buffer;
+            var __arg1 = &_buffer;
             fixed (uint* __refParamPtr2 = &bufferLength)
             {
                 var __arg2 = __refParamPtr2;
-                var __ret = __Internal.JsGetDataViewStorage_0(dataView, buffer, __arg2);
+                var __ret = __Internal.JsGetDataViewStorage_0(dataView, __arg1, __arg2);
+                buffer = _buffer;
                 return __ret;
             }
         }
@@ -3196,9 +3222,12 @@ namespace ChakraSharp
         /// <param name="result">
         /// <para>The value returned from the function invocation, if any.</para>
         /// </param>
-        public static _JsErrorCode JsCallFunction(global::System.IntPtr function, global::System.IntPtr arguments, ushort argumentCount, global::System.IntPtr result)
+        public static _JsErrorCode JsCallFunction(global::System.IntPtr function, global::System.IntPtr arguments, ushort argumentCount, out global::System.IntPtr result)
         {
-            var __ret = __Internal.JsCallFunction_0(function, arguments, argumentCount, result);
+            global::System.IntPtr _result;
+            var __arg3 = &_result;
+            var __ret = __Internal.JsCallFunction_0(function, arguments, argumentCount, __arg3);
+            result = _result;
             return __ret;
         }
 
@@ -3947,7 +3976,7 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint = "JsTTDGetSnapTimeTopLevelEventMove")]
-            internal static extern _JsErrorCode JsTTDGetSnapTimeTopLevelEventMove_0(global::System.IntPtr runtimeHandle, _JsTTDMoveModes moveMode, uint kthEvent, long* targetEventTime, int* targetStartSnapTime, long* targetEndSnapTime);
+            internal static extern _JsErrorCode JsTTDGetSnapTimeTopLevelEventMove_0(global::System.IntPtr runtimeHandle, _JsTTDMoveModes moveMode, uint kthEvent, long* targetEventTime, int* targetStartSnapTime, int* targetEndSnapTime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -4696,7 +4725,7 @@ namespace ChakraSharp
         /// <param name="targetEndSnapTime">
         /// <para>Optional Out parameter with the snapshot time following the event.</para>
         /// </param>
-        public static _JsErrorCode JsTTDGetSnapTimeTopLevelEventMove(global::System.IntPtr runtimeHandle, _JsTTDMoveModes moveMode, uint kthEvent, ref long targetEventTime, out int targetStartSnapTime, ref long targetEndSnapTime)
+        public static _JsErrorCode JsTTDGetSnapTimeTopLevelEventMove(global::System.IntPtr runtimeHandle, _JsTTDMoveModes moveMode, uint kthEvent, ref long targetEventTime, out int targetStartSnapTime, out int targetEndSnapTime)
         {
             fixed (long* __refParamPtr3 = &targetEventTime)
             {
@@ -4704,7 +4733,7 @@ namespace ChakraSharp
                 fixed (int* __refParamPtr4 = &targetStartSnapTime)
                 {
                     var __arg4 = __refParamPtr4;
-                    fixed (long* __refParamPtr5 = &targetEndSnapTime)
+                    fixed (int* __refParamPtr5 = &targetEndSnapTime)
                     {
                         var __arg5 = __refParamPtr5;
                         var __ret = __Internal.JsTTDGetSnapTimeTopLevelEventMove_0(runtimeHandle, moveMode, kthEvent, __arg3, __arg4, __arg5);
