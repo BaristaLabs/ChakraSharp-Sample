@@ -21,7 +21,8 @@ namespace ChakraSharp
         JsModuleHostInfoException = 1,
         JsModuleHostInfoHostDefined = 2,
         JsModuleHostInfoNotifyModuleReadyCallback = 3,
-        JsModuleHostInfoFetchImportedModuleCallback = 4
+        JsModuleHostInfoFetchImportedModuleCallback = 4,
+        JsModuleHostInfoFetchImportedModuleFromScriptCallback = 5
     }
 
     public class JsModuleRecord { }
@@ -45,6 +46,16 @@ namespace ChakraSharp
     // <param name="referencingModule">The referencing module that have finished running ModuleDeclarationInstantiation step.</param>
     // <param name="exceptionVar">If nullptr, the module is successfully initialized and host should queue the execution job otherwise it's the exception object.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    public unsafe delegate global::ChakraSharp.JsErrorCode FetchImportedModuleFromScriptCallBack(ulong dwReferencingSourceContext, global::System.IntPtr specifier, global::System.IntPtr* dependentModuleRecord);
+
+    // <summary>User implemented callback to get notification when the module is ready.</summary>
+    // <remarks>
+    // <para>Notify the host after ModuleDeclarationInstantiation step (15.2.1.1.6.4) is finished. If there was error in the process, exceptionVar</para>
+    // <para>holds the exception. Otherwise the referencingModule is ready and the host should schedule execution afterwards.</para>
+    // </remarks>
+    // <param name="dwReferencingSourceContext">The referencing script that calls import()</param>
+    // <param name="exceptionVar">If nullptr, the module is successfully initialized and host should queue the execution job otherwise it's the exception object.</param>
+    [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public unsafe delegate global::ChakraSharp.JsErrorCode NotifyModuleReadyCallback(global::System.IntPtr referencingModule, global::System.IntPtr exceptionVar);
 
     // <summary>Called by the runtime to load the source code of the serialized script.</summary>
@@ -53,94 +64,110 @@ namespace ChakraSharp
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public unsafe delegate bool JsSerializedLoadScriptCallback(ulong sourceContext, global::System.IntPtr* value, global::ChakraSharp.JsParseScriptAttributes* parseAttributes);
 
+    // <summary>A weak reference to a JavaScript value.</summary>
+    // <remarks>
+    // <para>A value with only weak references is available for garbage-collection. A strong reference</para>
+    // <para>to the value (JsValueRef) may be obtained from a weak reference if the value happens</para>
+    // <para>to still be available.</para>
+    // </remarks>
     public unsafe partial class ChakraCore
     {
         public partial struct __Internal
         {
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsInitializeModuleRecord")]
+                EntryPoint="JsInitializeModuleRecord")]
             internal static extern global::ChakraSharp.JsErrorCode JsInitializeModuleRecord_0(global::System.IntPtr referencingModule, global::System.IntPtr normalizedSpecifier, global::System.IntPtr* moduleRecord);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsParseModuleSource")]
+                EntryPoint="JsParseModuleSource")]
             internal static extern global::ChakraSharp.JsErrorCode JsParseModuleSource_0(global::System.IntPtr requestModule, ulong sourceContext, byte* script, uint scriptLength, global::ChakraSharp.JsParseModuleSourceFlags sourceFlag, global::System.IntPtr* exceptionValueRef);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsModuleEvaluation")]
+                EntryPoint="JsModuleEvaluation")]
             internal static extern global::ChakraSharp.JsErrorCode JsModuleEvaluation_0(global::System.IntPtr requestModule, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetModuleHostInfo")]
+                EntryPoint="JsSetModuleHostInfo")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetModuleHostInfo_0(global::System.IntPtr requestModule, global::ChakraSharp.JsModuleHostInfoKind moduleHostInfo, global::System.IntPtr hostInfo);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetModuleHostInfo")]
+                EntryPoint="JsGetModuleHostInfo")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetModuleHostInfo_0(global::System.IntPtr requestModule, global::ChakraSharp.JsModuleHostInfoKind moduleHostInfo, global::System.IntPtr* hostInfo);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateString")]
+                EntryPoint="JsCreateString")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateString_0([MarshalAs(UnmanagedType.LPStr)] string content, ulong length, global::System.IntPtr* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateStringUtf16")]
+                EntryPoint="JsCreateStringUtf16")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateStringUtf16_0(ushort* content, ulong length, global::System.IntPtr* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCopyString")]
+                EntryPoint="JsCopyString")]
             internal static extern global::ChakraSharp.JsErrorCode JsCopyString_0(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, uint* written);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCopyStringUtf16")]
+                EntryPoint="JsCopyStringUtf16")]
             internal static extern global::ChakraSharp.JsErrorCode JsCopyStringUtf16_0(global::System.IntPtr value, int start, int length, ushort* buffer, uint* written);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsParse")]
+                EntryPoint="JsParse")]
             internal static extern global::ChakraSharp.JsErrorCode JsParse_0(global::System.IntPtr script, ulong sourceContext, global::System.IntPtr sourceUrl, global::ChakraSharp.JsParseScriptAttributes parseAttributes, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsRun")]
+                EntryPoint="JsRun")]
             internal static extern global::ChakraSharp.JsErrorCode JsRun_0(global::System.IntPtr script, ulong sourceContext, global::System.IntPtr sourceUrl, global::ChakraSharp.JsParseScriptAttributes parseAttributes, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreatePropertyId")]
+                EntryPoint="JsCreatePropertyId")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreatePropertyId_0([MarshalAs(UnmanagedType.LPStr)] string name, ulong length, global::System.IntPtr* propertyId);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCopyPropertyId")]
+                EntryPoint="JsCopyPropertyId")]
             internal static extern global::ChakraSharp.JsErrorCode JsCopyPropertyId_0(global::System.IntPtr propertyId, sbyte* buffer, ulong bufferSize, uint* length);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSerialize")]
+                EntryPoint="JsSerialize")]
             internal static extern global::ChakraSharp.JsErrorCode JsSerialize_0(global::System.IntPtr script, global::System.IntPtr* buffer, global::ChakraSharp.JsParseScriptAttributes parseAttributes);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsParseSerialized")]
+                EntryPoint="JsParseSerialized")]
             internal static extern global::ChakraSharp.JsErrorCode JsParseSerialized_0(global::System.IntPtr buffer, global::System.IntPtr scriptLoadCallback, ulong sourceContext, global::System.IntPtr sourceUrl, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsRunSerialized")]
+                EntryPoint="JsRunSerialized")]
             internal static extern global::ChakraSharp.JsErrorCode JsRunSerialized_0(global::System.IntPtr buffer, global::System.IntPtr scriptLoadCallback, ulong sourceContext, global::System.IntPtr sourceUrl, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreatePromise")]
+                EntryPoint="JsCreatePromise")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreatePromise_0(global::System.IntPtr* promise, global::System.IntPtr* resolveFunction, global::System.IntPtr* rejectFunction);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsCreateWeakReference")]
+            internal static extern global::ChakraSharp.JsErrorCode JsCreateWeakReference_0(global::System.IntPtr value, global::System.IntPtr* weakRef);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsGetWeakReferenceValue")]
+            internal static extern global::ChakraSharp.JsErrorCode JsGetWeakReferenceValue_0(global::System.IntPtr weakRef, global::System.IntPtr* value);
         }
 
         // <summary>Initialize a ModuleRecord from host</summary>
@@ -470,6 +497,30 @@ namespace ChakraSharp
             promise = _promise;
             resolveFunction = _resolveFunction;
             rejectFunction = _rejectFunction;
+            return __ret;
+        }
+
+        // <summary>Creates a weak reference to a value.</summary>
+        // <param name="value">The value to be referenced.</param>
+        // <param name="weakRef">Weak reference to the value.</param>
+        public static global::ChakraSharp.JsErrorCode JsCreateWeakReference(global::System.IntPtr value, out global::System.IntPtr weakRef)
+        {
+            global::System.IntPtr _weakRef;
+            var __arg1 = &_weakRef;
+            var __ret = __Internal.JsCreateWeakReference_0(value, __arg1);
+            weakRef = _weakRef;
+            return __ret;
+        }
+
+        // <summary>Gets a strong reference to the value referred to by a weak reference.</summary>
+        // <param name="weakRef">A weak reference.</param>
+        // <param name="value">Reference to the value, or JS_INVALID_REFERENCE if the value is no longer available.</param>
+        public static global::ChakraSharp.JsErrorCode JsGetWeakReferenceValue(global::System.IntPtr weakRef, out global::System.IntPtr value)
+        {
+            global::System.IntPtr _value;
+            var __arg1 = &_value;
+            var __ret = __Internal.JsGetWeakReferenceValue_0(weakRef, __arg1);
+            value = _value;
             return __ret;
         }
     }
@@ -807,467 +858,467 @@ namespace ChakraSharp
         {
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateRuntime")]
+                EntryPoint="JsCreateRuntime")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateRuntime_0(global::ChakraSharp.JsRuntimeAttributes attributes, global::System.IntPtr threadService, global::System.IntPtr* runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCollectGarbage")]
+                EntryPoint="JsCollectGarbage")]
             internal static extern global::ChakraSharp.JsErrorCode JsCollectGarbage_0(global::System.IntPtr runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDisposeRuntime")]
+                EntryPoint="JsDisposeRuntime")]
             internal static extern global::ChakraSharp.JsErrorCode JsDisposeRuntime_0(global::System.IntPtr runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetRuntimeMemoryUsage")]
+                EntryPoint="JsGetRuntimeMemoryUsage")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetRuntimeMemoryUsage_0(global::System.IntPtr runtime, uint* memoryUsage);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetRuntimeMemoryLimit")]
+                EntryPoint="JsGetRuntimeMemoryLimit")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetRuntimeMemoryLimit_0(global::System.IntPtr runtime, uint* memoryLimit);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetRuntimeMemoryLimit")]
+                EntryPoint="JsSetRuntimeMemoryLimit")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetRuntimeMemoryLimit_0(global::System.IntPtr runtime, ulong memoryLimit);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetRuntimeMemoryAllocationCallback")]
+                EntryPoint="JsSetRuntimeMemoryAllocationCallback")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetRuntimeMemoryAllocationCallback_0(global::System.IntPtr runtime, global::System.IntPtr callbackState, global::System.IntPtr allocationCallback);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetRuntimeBeforeCollectCallback")]
+                EntryPoint="JsSetRuntimeBeforeCollectCallback")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetRuntimeBeforeCollectCallback_0(global::System.IntPtr runtime, global::System.IntPtr callbackState, global::System.IntPtr beforeCollectCallback);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsAddRef")]
+                EntryPoint="JsAddRef")]
             internal static extern global::ChakraSharp.JsErrorCode JsAddRef_0(global::System.IntPtr @ref, uint* count);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsRelease")]
+                EntryPoint="JsRelease")]
             internal static extern global::ChakraSharp.JsErrorCode JsRelease_0(global::System.IntPtr @ref, uint* count);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetObjectBeforeCollectCallback")]
+                EntryPoint="JsSetObjectBeforeCollectCallback")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetObjectBeforeCollectCallback_0(global::System.IntPtr @ref, global::System.IntPtr callbackState, global::System.IntPtr objectBeforeCollectCallback);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateContext")]
+                EntryPoint="JsCreateContext")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateContext_0(global::System.IntPtr runtime, global::System.IntPtr* newContext);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetCurrentContext")]
+                EntryPoint="JsGetCurrentContext")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetCurrentContext_0(global::System.IntPtr* currentContext);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetCurrentContext")]
+                EntryPoint="JsSetCurrentContext")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetCurrentContext_0(global::System.IntPtr context);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetContextOfObject")]
+                EntryPoint="JsGetContextOfObject")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetContextOfObject_0(global::System.IntPtr targetObject, global::System.IntPtr* context);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetContextData")]
+                EntryPoint="JsGetContextData")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetContextData_0(global::System.IntPtr context, global::System.IntPtr* data);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetContextData")]
+                EntryPoint="JsSetContextData")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetContextData_0(global::System.IntPtr context, global::System.IntPtr data);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetRuntime")]
+                EntryPoint="JsGetRuntime")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetRuntime_0(global::System.IntPtr context, global::System.IntPtr* runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsIdle")]
+                EntryPoint="JsIdle")]
             internal static extern global::ChakraSharp.JsErrorCode JsIdle_0(uint* nextIdleTick);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetSymbolFromPropertyId")]
+                EntryPoint="JsGetSymbolFromPropertyId")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetSymbolFromPropertyId_0(global::System.IntPtr propertyId, global::System.IntPtr* symbol);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetPropertyIdType")]
+                EntryPoint="JsGetPropertyIdType")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetPropertyIdType_0(global::System.IntPtr propertyId, global::ChakraSharp.JsPropertyIdType* propertyIdType);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetPropertyIdFromSymbol")]
+                EntryPoint="JsGetPropertyIdFromSymbol")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetPropertyIdFromSymbol_0(global::System.IntPtr symbol, global::System.IntPtr* propertyId);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateSymbol")]
+                EntryPoint="JsCreateSymbol")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateSymbol_0(global::System.IntPtr description, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetOwnPropertySymbols")]
+                EntryPoint="JsGetOwnPropertySymbols")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetOwnPropertySymbols_0(global::System.IntPtr targetObject, global::System.IntPtr* propertySymbols);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetUndefinedValue")]
+                EntryPoint="JsGetUndefinedValue")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetUndefinedValue_0(global::System.IntPtr* undefinedValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetNullValue")]
+                EntryPoint="JsGetNullValue")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetNullValue_0(global::System.IntPtr* nullValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetTrueValue")]
+                EntryPoint="JsGetTrueValue")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetTrueValue_0(global::System.IntPtr* trueValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetFalseValue")]
+                EntryPoint="JsGetFalseValue")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetFalseValue_0(global::System.IntPtr* falseValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsBoolToBoolean")]
+                EntryPoint="JsBoolToBoolean")]
             internal static extern global::ChakraSharp.JsErrorCode JsBoolToBoolean_0(bool value, global::System.IntPtr* booleanValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsBooleanToBool")]
+                EntryPoint="JsBooleanToBool")]
             internal static extern global::ChakraSharp.JsErrorCode JsBooleanToBool_0(global::System.IntPtr value, bool* boolValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsConvertValueToBoolean")]
+                EntryPoint="JsConvertValueToBoolean")]
             internal static extern global::ChakraSharp.JsErrorCode JsConvertValueToBoolean_0(global::System.IntPtr value, global::System.IntPtr* booleanValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetValueType")]
+                EntryPoint="JsGetValueType")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetValueType_0(global::System.IntPtr value, global::ChakraSharp.JsValueType* type);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDoubleToNumber")]
+                EntryPoint="JsDoubleToNumber")]
             internal static extern global::ChakraSharp.JsErrorCode JsDoubleToNumber_0(double doubleValue, global::System.IntPtr* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsIntToNumber")]
+                EntryPoint="JsIntToNumber")]
             internal static extern global::ChakraSharp.JsErrorCode JsIntToNumber_0(int intValue, global::System.IntPtr* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsNumberToDouble")]
+                EntryPoint="JsNumberToDouble")]
             internal static extern global::ChakraSharp.JsErrorCode JsNumberToDouble_0(global::System.IntPtr value, double* doubleValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsNumberToInt")]
+                EntryPoint="JsNumberToInt")]
             internal static extern global::ChakraSharp.JsErrorCode JsNumberToInt_0(global::System.IntPtr value, int* intValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsConvertValueToNumber")]
+                EntryPoint="JsConvertValueToNumber")]
             internal static extern global::ChakraSharp.JsErrorCode JsConvertValueToNumber_0(global::System.IntPtr value, global::System.IntPtr* numberValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetStringLength")]
+                EntryPoint="JsGetStringLength")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetStringLength_0(global::System.IntPtr stringValue, int* length);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsConvertValueToString")]
+                EntryPoint="JsConvertValueToString")]
             internal static extern global::ChakraSharp.JsErrorCode JsConvertValueToString_0(global::System.IntPtr value, global::System.IntPtr* stringValue);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetGlobalObject")]
+                EntryPoint="JsGetGlobalObject")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetGlobalObject_0(global::System.IntPtr* globalObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateObject")]
+                EntryPoint="JsCreateObject")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateObject_0(global::System.IntPtr* targetObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateExternalObject")]
+                EntryPoint="JsCreateExternalObject")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateExternalObject_0(global::System.IntPtr data, global::System.IntPtr finalizeCallback, global::System.IntPtr* targetObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsConvertValueToObject")]
+                EntryPoint="JsConvertValueToObject")]
             internal static extern global::ChakraSharp.JsErrorCode JsConvertValueToObject_0(global::System.IntPtr value, global::System.IntPtr* targetObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetPrototype")]
+                EntryPoint="JsGetPrototype")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetPrototype_0(global::System.IntPtr targetObject, global::System.IntPtr* prototypeObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetPrototype")]
+                EntryPoint="JsSetPrototype")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetPrototype_0(global::System.IntPtr targetObject, global::System.IntPtr prototypeObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsInstanceOf")]
+                EntryPoint="JsInstanceOf")]
             internal static extern global::ChakraSharp.JsErrorCode JsInstanceOf_0(global::System.IntPtr targetObject, global::System.IntPtr constructor, bool* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetExtensionAllowed")]
+                EntryPoint="JsGetExtensionAllowed")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetExtensionAllowed_0(global::System.IntPtr targetObject, bool* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsPreventExtension")]
+                EntryPoint="JsPreventExtension")]
             internal static extern global::ChakraSharp.JsErrorCode JsPreventExtension_0(global::System.IntPtr targetObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetProperty")]
+                EntryPoint="JsGetProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetProperty_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, global::System.IntPtr* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetOwnPropertyDescriptor")]
+                EntryPoint="JsGetOwnPropertyDescriptor")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetOwnPropertyDescriptor_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, global::System.IntPtr* propertyDescriptor);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetOwnPropertyNames")]
+                EntryPoint="JsGetOwnPropertyNames")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetOwnPropertyNames_0(global::System.IntPtr targetObject, global::System.IntPtr* propertyNames);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetProperty")]
+                EntryPoint="JsSetProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetProperty_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, global::System.IntPtr value, bool useStrictRules);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsHasProperty")]
+                EntryPoint="JsHasProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsHasProperty_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, bool* hasProperty);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDeleteProperty")]
+                EntryPoint="JsDeleteProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsDeleteProperty_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, bool useStrictRules, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDefineProperty")]
+                EntryPoint="JsDefineProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsDefineProperty_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, global::System.IntPtr propertyDescriptor, bool* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsHasIndexedProperty")]
+                EntryPoint="JsHasIndexedProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsHasIndexedProperty_0(global::System.IntPtr targetObject, global::System.IntPtr index, bool* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetIndexedProperty")]
+                EntryPoint="JsGetIndexedProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetIndexedProperty_0(global::System.IntPtr targetObject, global::System.IntPtr index, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetIndexedProperty")]
+                EntryPoint="JsSetIndexedProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetIndexedProperty_0(global::System.IntPtr targetObject, global::System.IntPtr index, global::System.IntPtr value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDeleteIndexedProperty")]
+                EntryPoint="JsDeleteIndexedProperty")]
             internal static extern global::ChakraSharp.JsErrorCode JsDeleteIndexedProperty_0(global::System.IntPtr targetObject, global::System.IntPtr index);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsHasIndexedPropertiesExternalData")]
+                EntryPoint="JsHasIndexedPropertiesExternalData")]
             internal static extern global::ChakraSharp.JsErrorCode JsHasIndexedPropertiesExternalData_0(global::System.IntPtr targetObject, bool* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetIndexedPropertiesExternalData")]
+                EntryPoint="JsGetIndexedPropertiesExternalData")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetIndexedPropertiesExternalData_0(global::System.IntPtr targetObject, global::System.IntPtr* data, global::ChakraSharp.JsTypedArrayType* arrayType, uint* elementLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetIndexedPropertiesToExternalData")]
+                EntryPoint="JsSetIndexedPropertiesToExternalData")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetIndexedPropertiesToExternalData_0(global::System.IntPtr targetObject, global::System.IntPtr data, global::ChakraSharp.JsTypedArrayType arrayType, uint elementLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsEquals")]
+                EntryPoint="JsEquals")]
             internal static extern global::ChakraSharp.JsErrorCode JsEquals_0(global::System.IntPtr object1, global::System.IntPtr object2, bool* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsStrictEquals")]
+                EntryPoint="JsStrictEquals")]
             internal static extern global::ChakraSharp.JsErrorCode JsStrictEquals_0(global::System.IntPtr object1, global::System.IntPtr object2, bool* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsHasExternalData")]
+                EntryPoint="JsHasExternalData")]
             internal static extern global::ChakraSharp.JsErrorCode JsHasExternalData_0(global::System.IntPtr targetObject, bool* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetExternalData")]
+                EntryPoint="JsGetExternalData")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetExternalData_0(global::System.IntPtr targetObject, global::System.IntPtr* externalData);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetExternalData")]
+                EntryPoint="JsSetExternalData")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetExternalData_0(global::System.IntPtr targetObject, global::System.IntPtr externalData);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateArray")]
+                EntryPoint="JsCreateArray")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateArray_0(uint length, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateArrayBuffer")]
+                EntryPoint="JsCreateArrayBuffer")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateArrayBuffer_0(uint byteLength, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateExternalArrayBuffer")]
+                EntryPoint="JsCreateExternalArrayBuffer")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateExternalArrayBuffer_0(global::System.IntPtr data, uint byteLength, global::System.IntPtr finalizeCallback, global::System.IntPtr callbackState, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateTypedArray")]
+                EntryPoint="JsCreateTypedArray")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateTypedArray_0(global::ChakraSharp.JsTypedArrayType arrayType, global::System.IntPtr baseArray, uint byteOffset, uint elementLength, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateDataView")]
+                EntryPoint="JsCreateDataView")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateDataView_0(global::System.IntPtr arrayBuffer, uint byteOffset, uint byteLength, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetTypedArrayInfo")]
+                EntryPoint="JsGetTypedArrayInfo")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetTypedArrayInfo_0(global::System.IntPtr typedArray, global::ChakraSharp.JsTypedArrayType* arrayType, global::System.IntPtr* arrayBuffer, uint* byteOffset, uint* byteLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetArrayBufferStorage")]
+                EntryPoint="JsGetArrayBufferStorage")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetArrayBufferStorage_0(global::System.IntPtr arrayBuffer, global::System.IntPtr* buffer, uint* bufferLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetTypedArrayStorage")]
+                EntryPoint="JsGetTypedArrayStorage")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetTypedArrayStorage_0(global::System.IntPtr typedArray, global::System.IntPtr* buffer, uint* bufferLength, global::ChakraSharp.JsTypedArrayType* arrayType, int* elementSize);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetDataViewStorage")]
+                EntryPoint="JsGetDataViewStorage")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetDataViewStorage_0(global::System.IntPtr dataView, global::System.IntPtr* buffer, uint* bufferLength);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCallFunction")]
+                EntryPoint="JsCallFunction")]
             internal static extern global::ChakraSharp.JsErrorCode JsCallFunction_0(global::System.IntPtr function, global::System.IntPtr arguments, ushort argumentCount, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsConstructObject")]
+                EntryPoint="JsConstructObject")]
             internal static extern global::ChakraSharp.JsErrorCode JsConstructObject_0(global::System.IntPtr function, global::System.IntPtr arguments, ushort argumentCount, global::System.IntPtr* result);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateFunction")]
+                EntryPoint="JsCreateFunction")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateFunction_0(global::System.IntPtr nativeFunction, global::System.IntPtr callbackState, global::System.IntPtr* function);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateNamedFunction")]
+                EntryPoint="JsCreateNamedFunction")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateNamedFunction_0(global::System.IntPtr name, global::System.IntPtr nativeFunction, global::System.IntPtr callbackState, global::System.IntPtr* function);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateError")]
+                EntryPoint="JsCreateError")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateError_0(global::System.IntPtr message, global::System.IntPtr* error);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateRangeError")]
+                EntryPoint="JsCreateRangeError")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateRangeError_0(global::System.IntPtr message, global::System.IntPtr* error);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateReferenceError")]
+                EntryPoint="JsCreateReferenceError")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateReferenceError_0(global::System.IntPtr message, global::System.IntPtr* error);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateSyntaxError")]
+                EntryPoint="JsCreateSyntaxError")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateSyntaxError_0(global::System.IntPtr message, global::System.IntPtr* error);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateTypeError")]
+                EntryPoint="JsCreateTypeError")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateTypeError_0(global::System.IntPtr message, global::System.IntPtr* error);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsCreateURIError")]
+                EntryPoint="JsCreateURIError")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateURIError_0(global::System.IntPtr message, global::System.IntPtr* error);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsHasException")]
+                EntryPoint="JsHasException")]
             internal static extern global::ChakraSharp.JsErrorCode JsHasException_0(bool* hasException);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsGetAndClearException")]
+                EntryPoint="JsGetAndClearException")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetAndClearException_0(global::System.IntPtr* exception);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetException")]
+                EntryPoint="JsSetException")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetException_0(global::System.IntPtr exception);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDisableRuntimeExecution")]
+                EntryPoint="JsDisableRuntimeExecution")]
             internal static extern global::ChakraSharp.JsErrorCode JsDisableRuntimeExecution_0(global::System.IntPtr runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsEnableRuntimeExecution")]
+                EntryPoint="JsEnableRuntimeExecution")]
             internal static extern global::ChakraSharp.JsErrorCode JsEnableRuntimeExecution_0(global::System.IntPtr runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsIsRuntimeExecutionDisabled")]
+                EntryPoint="JsIsRuntimeExecutionDisabled")]
             internal static extern global::ChakraSharp.JsErrorCode JsIsRuntimeExecutionDisabled_0(global::System.IntPtr runtime, bool* isDisabled);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsSetPromiseContinuationCallback")]
+                EntryPoint="JsSetPromiseContinuationCallback")]
             internal static extern global::ChakraSharp.JsErrorCode JsSetPromiseContinuationCallback_0(global::System.IntPtr promiseContinuationCallback, global::System.IntPtr callbackState);
         }
 
@@ -2691,7 +2742,9 @@ namespace ChakraSharp
         // <summary>Perform a single step back to the previous statement (only applicable in TTD mode).</summary>
         JsDiagStepTypeStepBack = 3,
         // <summary>Perform a reverse continue operation (only applicable in TTD mode).</summary>
-        JsDiagStepTypeStepReverseContinue = 4
+        JsDiagStepTypeReverseContinue = 4,
+        // <summary>Perform a forward continue operation. Clears any existing step value.</summary>
+        JsDiagStepTypeContinue = 5
     }
 
     // <summary>TimeTravel move options as bit flag enum.</summary>
@@ -2708,6 +2761,8 @@ namespace ChakraSharp
         JsTTDMoveKthEvent = 4,
         // <summary>Indicates if we are doing the scan for a continue operation</summary>
         JsTTDMoveScanIntervalForContinue = 16,
+        // <summary>Indicates if we are doing the scan for a continue operation and are in the time-segment where the active breakpoint was</summary>
+        JsTTDMoveScanIntervalForContinueInActiveBreakpointSegment = 32,
         // <summary>Indicates if we want to set break on entry or just run and let something else trigger breakpoints.</summary>
         JsTTDMoveBreakOnEntry = 256
     }
@@ -2764,192 +2819,197 @@ namespace ChakraSharp
         {
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagStartDebugging")]
+                EntryPoint="JsDiagStartDebugging")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagStartDebugging_0(global::System.IntPtr runtimeHandle, global::System.IntPtr debugEventCallback, global::System.IntPtr callbackState);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagStopDebugging")]
+                EntryPoint="JsDiagStopDebugging")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagStopDebugging_0(global::System.IntPtr runtimeHandle, global::System.IntPtr* callbackState);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagRequestAsyncBreak")]
+                EntryPoint="JsDiagRequestAsyncBreak")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagRequestAsyncBreak_0(global::System.IntPtr runtimeHandle);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetBreakpoints")]
+                EntryPoint="JsDiagGetBreakpoints")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetBreakpoints_0(global::System.IntPtr* breakpoints);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagSetBreakpoint")]
+                EntryPoint="JsDiagSetBreakpoint")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagSetBreakpoint_0(uint scriptId, uint lineNumber, uint columnNumber, global::System.IntPtr* breakpoint);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagRemoveBreakpoint")]
+                EntryPoint="JsDiagRemoveBreakpoint")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagRemoveBreakpoint_0(uint breakpointId);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagSetBreakOnException")]
+                EntryPoint="JsDiagSetBreakOnException")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagSetBreakOnException_0(global::System.IntPtr runtimeHandle, global::ChakraSharp.JsDiagBreakOnExceptionAttributes exceptionAttributes);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetBreakOnException")]
+                EntryPoint="JsDiagGetBreakOnException")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetBreakOnException_0(global::System.IntPtr runtimeHandle, global::ChakraSharp.JsDiagBreakOnExceptionAttributes* exceptionAttributes);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagSetStepType")]
+                EntryPoint="JsDiagSetStepType")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagSetStepType_0(global::ChakraSharp.JsDiagStepType stepType);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetScripts")]
+                EntryPoint="JsDiagGetScripts")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetScripts_0(global::System.IntPtr* scriptsArray);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetSource")]
+                EntryPoint="JsDiagGetSource")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetSource_0(uint scriptId, global::System.IntPtr* source);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetFunctionPosition")]
+                EntryPoint="JsDiagGetFunctionPosition")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetFunctionPosition_0(global::System.IntPtr function, global::System.IntPtr* functionPosition);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetStackTrace")]
+                EntryPoint="JsDiagGetStackTrace")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetStackTrace_0(global::System.IntPtr* stackTrace);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetStackProperties")]
+                EntryPoint="JsDiagGetStackProperties")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetStackProperties_0(uint stackFrameIndex, global::System.IntPtr* properties);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetProperties")]
+                EntryPoint="JsDiagGetProperties")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetProperties_0(uint objectHandle, uint fromCount, uint totalCount, global::System.IntPtr* propertiesObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagGetObjectFromHandle")]
+                EntryPoint="JsDiagGetObjectFromHandle")]
             internal static extern global::ChakraSharp.JsErrorCode JsDiagGetObjectFromHandle_0(uint objectHandle, global::System.IntPtr* handleObject);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsDiagEvaluate")]
-            internal static extern global::ChakraSharp.JsErrorCode JsDiagEvaluate_0(global::System.IntPtr expression, uint stackFrameIndex, global::ChakraSharp.JsParseScriptAttributes parseAttributes, global::System.IntPtr* evalResult);
+                EntryPoint="JsDiagEvaluate")]
+            internal static extern global::ChakraSharp.JsErrorCode JsDiagEvaluate_0(global::System.IntPtr expression, uint stackFrameIndex, global::ChakraSharp.JsParseScriptAttributes parseAttributes, bool forceSetValueProp, global::System.IntPtr* evalResult);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDCreateRecordRuntime")]
+                EntryPoint="JsTTDCreateRecordRuntime")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDCreateRecordRuntime_0(global::ChakraSharp.JsRuntimeAttributes attributes, ulong snapInterval, ulong snapHistoryLength, global::System.IntPtr openResourceStream, global::System.IntPtr writeBytesToStream, global::System.IntPtr flushAndCloseStream, global::System.IntPtr threadService, global::System.IntPtr* runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDCreateReplayRuntime")]
+                EntryPoint="JsTTDCreateReplayRuntime")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDCreateReplayRuntime_0(global::ChakraSharp.JsRuntimeAttributes attributes, [MarshalAs(UnmanagedType.LPStr)] string infoUri, ulong infoUriCount, bool enableDebugging, global::System.IntPtr openResourceStream, global::System.IntPtr readBytesFromStream, global::System.IntPtr flushAndCloseStream, global::System.IntPtr threadService, global::System.IntPtr* runtime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDCreateContext")]
+                EntryPoint="JsTTDCreateContext")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDCreateContext_0(global::System.IntPtr runtimeHandle, bool useRuntimeTTDMode, global::System.IntPtr* newContext);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDNotifyContextDestroy")]
+                EntryPoint="JsTTDNotifyContextDestroy")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDNotifyContextDestroy_0(global::System.IntPtr context);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDStart")]
+                EntryPoint="JsTTDStart")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDStart_0();
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDStop")]
+                EntryPoint="JsTTDStop")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDStop_0();
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDPauseTimeTravelBeforeRuntimeOperation")]
+                EntryPoint="JsTTDPauseTimeTravelBeforeRuntimeOperation")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDPauseTimeTravelBeforeRuntimeOperation_0();
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDReStartTimeTravelAfterRuntimeOperation")]
+                EntryPoint="JsTTDReStartTimeTravelAfterRuntimeOperation")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDReStartTimeTravelAfterRuntimeOperation_0();
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDNotifyYield")]
+                EntryPoint="JsTTDNotifyYield")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDNotifyYield_0();
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDHostExit")]
+                EntryPoint="JsTTDNotifyLongLivedReferenceAdd")]
+            internal static extern global::ChakraSharp.JsErrorCode JsTTDNotifyLongLivedReferenceAdd_0(global::System.IntPtr value);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsTTDHostExit")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDHostExit_0(int statusCode);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDRawBufferCopySyncIndirect")]
+                EntryPoint="JsTTDRawBufferCopySyncIndirect")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDRawBufferCopySyncIndirect_0(global::System.IntPtr dst, ulong dstIndex, global::System.IntPtr src, ulong srcIndex, ulong count);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDRawBufferModifySyncIndirect")]
+                EntryPoint="JsTTDRawBufferModifySyncIndirect")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDRawBufferModifySyncIndirect_0(global::System.IntPtr buffer, ulong index, ulong count);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDRawBufferAsyncModificationRegister")]
+                EntryPoint="JsTTDRawBufferAsyncModificationRegister")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDRawBufferAsyncModificationRegister_0(global::System.IntPtr instance, byte* initialModPos);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDRawBufferAsyncModifyComplete")]
+                EntryPoint="JsTTDRawBufferAsyncModifyComplete")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDRawBufferAsyncModifyComplete_0(byte* finalModPos);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDCheckAndAssertIfTTDRunning")]
+                EntryPoint="JsTTDCheckAndAssertIfTTDRunning")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDCheckAndAssertIfTTDRunning_0([MarshalAs(UnmanagedType.LPStr)] string msg);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDGetSnapTimeTopLevelEventMove")]
+                EntryPoint="JsTTDGetSnapTimeTopLevelEventMove")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDGetSnapTimeTopLevelEventMove_0(global::System.IntPtr runtimeHandle, global::ChakraSharp.JsTTDMoveModes moveMode, uint kthEvent, long* targetEventTime, int* targetStartSnapTime, int* targetEndSnapTime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDGetSnapShotBoundInterval")]
+                EntryPoint="JsTTDGetSnapShotBoundInterval")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDGetSnapShotBoundInterval_0(global::System.IntPtr runtimeHandle, long targetEventTime, int* startSnapTime, int* endSnapTime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDGetPreviousSnapshotInterval")]
+                EntryPoint="JsTTDGetPreviousSnapshotInterval")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDGetPreviousSnapshotInterval_0(global::System.IntPtr runtimeHandle, long currentSnapStartTime, int* previousSnapTime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDPreExecuteSnapShotInterval")]
+                EntryPoint="JsTTDPreExecuteSnapShotInterval")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDPreExecuteSnapShotInterval_0(global::System.IntPtr runtimeHandle, long startSnapTime, long endSnapTime, global::ChakraSharp.JsTTDMoveModes moveMode, int* newTargetEventTime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDMoveToTopLevelEvent")]
+                EntryPoint="JsTTDMoveToTopLevelEvent")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDMoveToTopLevelEvent_0(global::System.IntPtr runtimeHandle, global::ChakraSharp.JsTTDMoveModes moveMode, long snapshotTime, long eventTime);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
-                EntryPoint = "JsTTDReplayExecution")]
+                EntryPoint="JsTTDReplayExecution")]
             internal static extern global::ChakraSharp.JsErrorCode JsTTDReplayExecution_0(global::ChakraSharp.JsTTDMoveModes* moveMode, int* rootEventTime);
         }
 
@@ -3288,12 +3348,13 @@ namespace ChakraSharp
         // <param name="expression">Javascript String or ArrayBuffer (incl. ExternalArrayBuffer).</param>
         // <param name="stackFrameIndex">Index of stack frame on which to evaluate the expression.</param>
         // <param name="parseAttributes">Defines how `expression` (JsValueRef) should be parsed. - `JsParseScriptAttributeNone` when `expression` is a Utf8 encoded ArrayBuffer and/or a Javascript String (encoding independent) - `JsParseScriptAttributeArrayBufferIsUtf16Encoded` when `expression` is Utf16 Encoded ArrayBuffer - `JsParseScriptAttributeLibraryCode` has no use for this function and has similar effect with `JsParseScriptAttributeNone`</param>
+        // <param name="forceSetValueProp">Forces the result to contain the raw value of the expression result.</param>
         // <param name="evalResult">Result of evaluation.</param>
-        public static global::ChakraSharp.JsErrorCode JsDiagEvaluate(global::System.IntPtr expression, uint stackFrameIndex, global::ChakraSharp.JsParseScriptAttributes parseAttributes, out global::System.IntPtr evalResult)
+        public static global::ChakraSharp.JsErrorCode JsDiagEvaluate(global::System.IntPtr expression, uint stackFrameIndex, global::ChakraSharp.JsParseScriptAttributes parseAttributes, bool forceSetValueProp, out global::System.IntPtr evalResult)
         {
             global::System.IntPtr _evalResult;
-            var __arg3 = &_evalResult;
-            var __ret = __Internal.JsDiagEvaluate_0(expression, stackFrameIndex, parseAttributes, __arg3);
+            var __arg4 = &_evalResult;
+            var __ret = __Internal.JsDiagEvaluate_0(expression, stackFrameIndex, parseAttributes, forceSetValueProp, __arg4);
             evalResult = _evalResult;
             return __ret;
         }
@@ -3397,6 +3458,14 @@ namespace ChakraSharp
         public static global::ChakraSharp.JsErrorCode JsTTDNotifyYield()
         {
             var __ret = __Internal.JsTTDNotifyYield_0();
+            return __ret;
+        }
+
+        // <summary>TTD API -- may change in future versions:     Notify the TTD runtime that we are doing a weak add on a reference (we may use this in external API calls and the release will happen in a GC callback).</summary>
+        // <param name="value">The value we are adding the ref to.</param>
+        public static global::ChakraSharp.JsErrorCode JsTTDNotifyLongLivedReferenceAdd(global::System.IntPtr value)
+        {
+            var __ret = __Internal.JsTTDNotifyLongLivedReferenceAdd_0(value);
             return __ret;
         }
 
