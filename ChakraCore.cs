@@ -27,6 +27,13 @@ namespace ChakraSharp
 
     public class JsModuleRecord { }
 
+    // <summary>A reference to an object owned by the SharedArrayBuffer.</summary>
+    // <remarks>
+    // <para>This represents SharedContents which is heap allocated object, it can be passed through</para>
+    // <para>different runtimes to share the underlying buffer.</para>
+    // </remarks>
+    public class JsSharedArrayBufferContentHandle { }
+
     // <summary>User implemented callback to fetch additional imported modules.</summary>
     // <remarks>
     // <para>Notify the host to fetch the dependent module. This is the &quot;import&quot; part before HostResolveImportedModule in ES6 spec.</para>
@@ -101,6 +108,11 @@ namespace ChakraSharp
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsGetAndClearExceptionWithMetadata")]
+            internal static extern global::ChakraSharp.JsErrorCode JsGetAndClearExceptionWithMetadata_0(global::System.IntPtr* metadata);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint="JsCreateString")]
             internal static extern global::ChakraSharp.JsErrorCode JsCreateString_0([MarshalAs(UnmanagedType.LPStr)] string content, ulong length, global::System.IntPtr* value);
 
@@ -112,7 +124,7 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint="JsCopyString")]
-            internal static extern global::ChakraSharp.JsErrorCode JsCopyString_0(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, uint* written);
+            internal static extern global::ChakraSharp.JsErrorCode JsCopyString_0(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, uint* length);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -168,6 +180,36 @@ namespace ChakraSharp
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint="JsGetWeakReferenceValue")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetWeakReferenceValue_0(global::System.IntPtr weakRef, global::System.IntPtr* value);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsCreateSharedArrayBufferWithSharedContent")]
+            internal static extern global::ChakraSharp.JsErrorCode JsCreateSharedArrayBufferWithSharedContent_0(global::System.IntPtr sharedContents, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsGetSharedArrayBufferContent")]
+            internal static extern global::ChakraSharp.JsErrorCode JsGetSharedArrayBufferContent_0(global::System.IntPtr sharedArrayBuffer, global::System.IntPtr* sharedContents);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsReleaseSharedArrayBufferContentHandle")]
+            internal static extern global::ChakraSharp.JsErrorCode JsReleaseSharedArrayBufferContentHandle_0(global::System.IntPtr sharedContents);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsHasOwnProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsHasOwnProperty_0(global::System.IntPtr targetObject, global::System.IntPtr propertyId, bool* hasOwnProperty);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsCopyStringOneByte")]
+            internal static extern global::ChakraSharp.JsErrorCode JsCopyStringOneByte_0(global::System.IntPtr value, int start, int length, sbyte* buffer, uint* written);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsGetDataViewInfo")]
+            internal static extern global::ChakraSharp.JsErrorCode JsGetDataViewInfo_0(global::System.IntPtr dataView, global::System.IntPtr* arrayBuffer, uint* byteOffset, uint* byteLength);
         }
 
         // <summary>Initialize a ModuleRecord from host</summary>
@@ -241,6 +283,33 @@ namespace ChakraSharp
             return __ret;
         }
 
+        // <summary>Returns metadata relating to the exception that caused the runtime of the current context     to be in the exception state and resets the exception state for that runtime. The metadata     includes a reference to the exception itself.</summary>
+        // <remarks>
+        // <para>If the runtime of the current context is not in an exception state, this API will return</para>
+        // <para>JsErrorInvalidArgument. If the runtime is disabled, this will return an exception</para>
+        // <para>indicating that the script was terminated, but it will not clear the exception (the</para>
+        // <para>exception will be cleared if the runtime is re-enabled using</para>
+        // <para>JsEnableRuntimeExecution).</para>
+        // <para></para>
+        // <para>The metadata value is a javascript object with the following properties: exception, the</para>
+        // <para>thrown exception object; line, the 0 indexed line number where the exception was thrown;</para>
+        // <para>column, the 0 indexed column number where the exception was thrown; length, the</para>
+        // <para>source-length of the cause of the exception; source, a string containing the line of</para>
+        // <para>source code where the exception was thrown; and url, a string containing the name of</para>
+        // <para>the script file containing the code that threw the exception.</para>
+        // <para></para>
+        // <para>Requires an active script context.</para>
+        // </remarks>
+        // <param name="metadata">The exception metadata for the runtime of the current context.</param>
+        public static global::ChakraSharp.JsErrorCode JsGetAndClearExceptionWithMetadata(out global::System.IntPtr metadata)
+        {
+            global::System.IntPtr _metadata;
+            var __arg0 = &_metadata;
+            var __ret = __Internal.JsGetAndClearExceptionWithMetadata_0(__arg0);
+            metadata = _metadata;
+            return __ret;
+        }
+
         // <summary>Create JavascriptString variable from ASCII or Utf8 string</summary>
         // <remarks>Input string can be either ASCII or Utf8</remarks>
         // <param name="content">Pointer to string memory.</param>
@@ -277,15 +346,15 @@ namespace ChakraSharp
         // <remarks>
         // <para>When size of the `buffer` is unknown,</para>
         // <para>`buffer` argument can be nullptr.</para>
-        // <para>In that case, `written` argument will return the length needed.</para>
+        // <para>In that case, `length` argument will return the length needed.</para>
         // </remarks>
         // <param name="value">JavascriptString value</param>
         // <param name="buffer">Pointer to buffer</param>
         // <param name="bufferSize">Buffer size</param>
-        // <param name="written">Total number of characters written</param>
-        public static global::ChakraSharp.JsErrorCode JsCopyString(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, out uint written)
+        // <param name="length">Total number of characters needed or written</param>
+        public static global::ChakraSharp.JsErrorCode JsCopyString(global::System.IntPtr value, sbyte* buffer, ulong bufferSize, out uint length)
         {
-            fixed (uint* __refParamPtr3 = &written)
+            fixed (uint* __refParamPtr3 = &length)
             {
                 var __arg3 = __refParamPtr3;
                 var __ret = __Internal.JsCopyString_0(value, buffer, bufferSize, __arg3);
@@ -523,6 +592,109 @@ namespace ChakraSharp
             value = _value;
             return __ret;
         }
+
+        // <summary>Creates a Javascript SharedArrayBuffer object with shared content get from JsGetSharedArrayBufferContent.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="sharedContents">The storage object of a SharedArrayBuffer which can be shared between multiple thread.</param>
+        // <param name="result">The new SharedArrayBuffer object.</param>
+        public static global::ChakraSharp.JsErrorCode JsCreateSharedArrayBufferWithSharedContent(global::System.IntPtr sharedContents, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg1 = &_result;
+            var __ret = __Internal.JsCreateSharedArrayBufferWithSharedContent_0(sharedContents, __arg1);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Get the storage object from a SharedArrayBuffer.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="sharedArrayBuffer">The SharedArrayBuffer object.</param>
+        // <param name="sharedContents">The storage object of a SharedArrayBuffer which can be shared between multiple thread. User should call JsReleaseSharedArrayBufferContentHandle after finished using it.</param>
+        public static global::ChakraSharp.JsErrorCode JsGetSharedArrayBufferContent(global::System.IntPtr sharedArrayBuffer, out global::System.IntPtr sharedContents)
+        {
+            global::System.IntPtr _sharedContents;
+            var __arg1 = &_sharedContents;
+            var __ret = __Internal.JsGetSharedArrayBufferContent_0(sharedArrayBuffer, __arg1);
+            sharedContents = _sharedContents;
+            return __ret;
+        }
+
+        // <summary>Decrease the reference count on a SharedArrayBuffer storage object.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="sharedContents">The storage object of a SharedArrayBuffer which can be shared between multiple thread.</param>
+        public static global::ChakraSharp.JsErrorCode JsReleaseSharedArrayBufferContentHandle(global::System.IntPtr sharedContents)
+        {
+            var __ret = __Internal.JsReleaseSharedArrayBufferContentHandle_0(sharedContents);
+            return __ret;
+        }
+
+        // <summary>Determines whether an object has a non-inherited property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that may contain the property.</param>
+        // <param name="propertyId">The ID of the property.</param>
+        // <param name="hasOwnProperty">Whether the object has the non-inherited property.</param>
+        public static global::ChakraSharp.JsErrorCode JsHasOwnProperty(global::System.IntPtr targetObject, global::System.IntPtr propertyId, out bool hasOwnProperty)
+        {
+            fixed (bool* __refParamPtr2 = &hasOwnProperty)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsHasOwnProperty_0(targetObject, propertyId, __arg2);
+                return __ret;
+            }
+        }
+
+        // <summary>Write JS string value into char string buffer without a null terminator</summary>
+        // <remarks>
+        // <para>When size of the `buffer` is unknown,</para>
+        // <para>`buffer` argument can be nullptr.</para>
+        // <para>In that case, `written` argument will return the length needed.</para>
+        // <para></para>
+        // <para>When start is out of range or &lt; 0, returns JsErrorInvalidArgument</para>
+        // <para>and `written` will be equal to 0.</para>
+        // <para>If calculated length is 0 (It can be due to string length or `start`</para>
+        // <para>and length combination), then `written` will be equal to 0 and call</para>
+        // <para>returns JsNoError</para>
+        // <para></para>
+        // <para>The JS string `value` will be converted one utf16 code point at a time,</para>
+        // <para>and if it has code points that do not fit in one byte, those values</para>
+        // <para>will be truncated.</para>
+        // </remarks>
+        // <param name="value">JavascriptString value</param>
+        // <param name="start">Start offset of buffer</param>
+        // <param name="length">Number of characters to be written</param>
+        // <param name="buffer">Pointer to buffer</param>
+        // <param name="written">Total number of characters written</param>
+        public static global::ChakraSharp.JsErrorCode JsCopyStringOneByte(global::System.IntPtr value, int start, int length, sbyte* buffer, out uint written)
+        {
+            fixed (uint* __refParamPtr4 = &written)
+            {
+                var __arg4 = __refParamPtr4;
+                var __ret = __Internal.JsCopyStringOneByte_0(value, start, length, buffer, __arg4);
+                return __ret;
+            }
+        }
+
+        // <summary>Obtains frequently used properties of a data view.</summary>
+        // <param name="dataView">The data view instance.</param>
+        // <param name="arrayBuffer">The ArrayBuffer backstore of the view.</param>
+        // <param name="byteOffset">The offset in bytes from the start of arrayBuffer referenced by the array.</param>
+        // <param name="byteLength">The number of bytes in the array.</param>
+        public static global::ChakraSharp.JsErrorCode JsGetDataViewInfo(global::System.IntPtr dataView, out global::System.IntPtr arrayBuffer, out uint byteOffset, out uint byteLength)
+        {
+            global::System.IntPtr _arrayBuffer;
+            var __arg1 = &_arrayBuffer;
+            fixed (uint* __refParamPtr2 = &byteOffset)
+            {
+                var __arg2 = __refParamPtr2;
+                fixed (uint* __refParamPtr3 = &byteLength)
+                {
+                    var __arg3 = __refParamPtr3;
+                    var __ret = __Internal.JsGetDataViewInfo_0(dataView, __arg1, __arg2, __arg3);
+                    arrayBuffer = _arrayBuffer;
+                    return __ret;
+                }
+            }
+        }
     }
 
     // <summary>An error code returned from a Chakra hosting API.</summary>
@@ -586,8 +758,6 @@ namespace ChakraSharp
         JsInvalidModuleHostInfoKind = 65562,
         // <summary>Module was parsed already when JsParseModuleSource is called.</summary>
         JsErrorModuleParsed = 65563,
-        // <summary>Module was evaluated already when JsModuleEvaluation is called.</summary>
-        JsErrorModuleEvaluated = 65564,
         // <summary>Category of errors that relates to errors occurring within the engine itself.</summary>
         JsErrorCategoryEngine = 131072,
         // <summary>The Chakra engine has run out of memory.</summary>

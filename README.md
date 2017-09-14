@@ -1,6 +1,8 @@
 # ChakraSharp-Sample
 Demonstrates the usage of the generated [ChakraSharp](https://github.com/BaristaLabs/ChakraSharp) output.
 
+> Updated to use ChakraCore 1.7
+
 This sample contains all the bits necessary to demonstrate the usage of ChakraCore in an application on Win x64. Simply clone and run.
 
 ##### File Description
