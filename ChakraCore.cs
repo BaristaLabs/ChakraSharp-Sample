@@ -22,46 +22,35 @@ namespace ChakraSharp
         JsModuleHostInfoHostDefined = 2,
         JsModuleHostInfoNotifyModuleReadyCallback = 3,
         JsModuleHostInfoFetchImportedModuleCallback = 4,
-        JsModuleHostInfoFetchImportedModuleFromScriptCallback = 5
+        JsModuleHostInfoFetchImportedModuleFromScriptCallback = 5,
+        JsModuleHostInfoUrl = 6
     }
 
     public class JsModuleRecord { }
 
     // <summary>A reference to an object owned by the SharedArrayBuffer.</summary>
-    // <remarks>
-    // <para>This represents SharedContents which is heap allocated object, it can be passed through</para>
-    // <para>different runtimes to share the underlying buffer.</para>
-    // </remarks>
+    // <remarks>This represents SharedContents which is heap allocated object, it can be passed through     different runtimes to share the underlying buffer.</remarks>
     public class JsSharedArrayBufferContentHandle { }
 
     // <summary>User implemented callback to fetch additional imported modules.</summary>
-    // <remarks>
-    // <para>Notify the host to fetch the dependent module. This is the &quot;import&quot; part before HostResolveImportedModule in ES6 spec.</para>
-    // <para>This notifies the host that the referencing module has the specified module dependency, and the host need to retrieve the module back.</para>
-    // </remarks>
+    // <remarks>Notify the host to fetch the dependent module. This is the &quot;import&quot; part before HostResolveImportedModule in ES6 spec. This notifies the host that the referencing module has the specified module dependency, and the host need to retrieve the module back.</remarks>
     // <param name="referencingModule">The referencing module that is requesting the dependency modules.</param>
     // <param name="specifier">The specifier coming from the module source code.</param>
-    // <param name="dependentModuleRecord">The ModuleRecord of the dependent module. If the module was requested before from other source, return the existing ModuleRecord, otherwise return a newly created ModuleRecord.</param>
+    // <param name="dependentModuleRecord">The ModuleRecord of the dependent module. If the module was requested before from other source, return the                           existing ModuleRecord, otherwise return a newly created ModuleRecord.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public unsafe delegate global::ChakraSharp.JsErrorCode FetchImportedModuleCallBack(global::System.IntPtr referencingModule, global::System.IntPtr specifier, global::System.IntPtr* dependentModuleRecord);
 
     // <summary>User implemented callback to get notification when the module is ready.</summary>
-    // <remarks>
-    // <para>Notify the host after ModuleDeclarationInstantiation step (15.2.1.1.6.4) is finished. If there was error in the process, exceptionVar</para>
-    // <para>holds the exception. Otherwise the referencingModule is ready and the host should schedule execution afterwards.</para>
-    // </remarks>
+    // <remarks>Notify the host after ModuleDeclarationInstantiation step (15.2.1.1.6.4) is finished. If there was error in the process, exceptionVar holds the exception. Otherwise the referencingModule is ready and the host should schedule execution afterwards.</remarks>
     // <param name="referencingModule">The referencing module that have finished running ModuleDeclarationInstantiation step.</param>
-    // <param name="exceptionVar">If nullptr, the module is successfully initialized and host should queue the execution job otherwise it's the exception object.</param>
+    // <param name="exceptionVar">If nullptr, the module is successfully initialized and host should queue the execution job                           otherwise it's the exception object.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public unsafe delegate global::ChakraSharp.JsErrorCode FetchImportedModuleFromScriptCallBack(ulong dwReferencingSourceContext, global::System.IntPtr specifier, global::System.IntPtr* dependentModuleRecord);
 
     // <summary>User implemented callback to get notification when the module is ready.</summary>
-    // <remarks>
-    // <para>Notify the host after ModuleDeclarationInstantiation step (15.2.1.1.6.4) is finished. If there was error in the process, exceptionVar</para>
-    // <para>holds the exception. Otherwise the referencingModule is ready and the host should schedule execution afterwards.</para>
-    // </remarks>
+    // <remarks>Notify the host after ModuleDeclarationInstantiation step (15.2.1.1.6.4) is finished. If there was error in the process, exceptionVar holds the exception. Otherwise the referencingModule is ready and the host should schedule execution afterwards.</remarks>
     // <param name="dwReferencingSourceContext">The referencing script that calls import()</param>
-    // <param name="exceptionVar">If nullptr, the module is successfully initialized and host should queue the execution job otherwise it's the exception object.</param>
+    // <param name="exceptionVar">If nullptr, the module is successfully initialized and host should queue the execution job                           otherwise it's the exception object.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public unsafe delegate global::ChakraSharp.JsErrorCode NotifyModuleReadyCallback(global::System.IntPtr referencingModule, global::System.IntPtr exceptionVar);
 
@@ -72,11 +61,7 @@ namespace ChakraSharp
     public unsafe delegate bool JsSerializedLoadScriptCallback(ulong sourceContext, global::System.IntPtr* value, global::ChakraSharp.JsParseScriptAttributes* parseAttributes);
 
     // <summary>A weak reference to a JavaScript value.</summary>
-    // <remarks>
-    // <para>A value with only weak references is available for garbage-collection. A strong reference</para>
-    // <para>to the value (JsValueRef) may be obtained from a weak reference if the value happens</para>
-    // <para>to still be available.</para>
-    // </remarks>
+    // <remarks>A value with only weak references is available for garbage-collection. A strong reference     to the value (JsValueRef) may be obtained from a weak reference if the value happens     to still be available.</remarks>
     public unsafe partial class ChakraCore
     {
         public partial struct __Internal
@@ -119,7 +104,7 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint="JsCreateStringUtf16")]
-            internal static extern global::ChakraSharp.JsErrorCode JsCreateStringUtf16_0(ushort* content, ulong length, global::System.IntPtr* value);
+            internal static extern global::ChakraSharp.JsErrorCode JsCreateStringUtf16_0(uint* content, ulong length, global::System.IntPtr* value);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -129,7 +114,7 @@ namespace ChakraSharp
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint="JsCopyStringUtf16")]
-            internal static extern global::ChakraSharp.JsErrorCode JsCopyStringUtf16_0(global::System.IntPtr value, int start, int length, ushort* buffer, uint* written);
+            internal static extern global::ChakraSharp.JsErrorCode JsCopyStringUtf16_0(global::System.IntPtr value, int start, int length, uint* buffer, uint* written);
 
             [SuppressUnmanagedCodeSecurity]
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
@@ -210,13 +195,58 @@ namespace ChakraSharp
             [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
                 EntryPoint="JsGetDataViewInfo")]
             internal static extern global::ChakraSharp.JsErrorCode JsGetDataViewInfo_0(global::System.IntPtr dataView, global::System.IntPtr* arrayBuffer, uint* byteOffset, uint* byteLength);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsLessThan")]
+            internal static extern global::ChakraSharp.JsErrorCode JsLessThan_0(global::System.IntPtr object1, global::System.IntPtr object2, bool* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsLessThanOrEqual")]
+            internal static extern global::ChakraSharp.JsErrorCode JsLessThanOrEqual_0(global::System.IntPtr object1, global::System.IntPtr object2, bool* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectGetProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectGetProperty_0(global::System.IntPtr targetObject, global::System.IntPtr key, global::System.IntPtr* value);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectSetProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectSetProperty_0(global::System.IntPtr targetObject, global::System.IntPtr key, global::System.IntPtr value, bool useStrictRules);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectHasProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectHasProperty_0(global::System.IntPtr targetObject, global::System.IntPtr key, bool* hasProperty);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectDefineProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectDefineProperty_0(global::System.IntPtr targetObject, global::System.IntPtr key, global::System.IntPtr propertyDescriptor, bool* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectDeleteProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectDeleteProperty_0(global::System.IntPtr targetObject, global::System.IntPtr key, bool useStrictRules, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectGetOwnPropertyDescriptor")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectGetOwnPropertyDescriptor_0(global::System.IntPtr targetObject, global::System.IntPtr key, global::System.IntPtr* propertyDescriptor);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsObjectHasOwnProperty")]
+            internal static extern global::ChakraSharp.JsErrorCode JsObjectHasOwnProperty_0(global::System.IntPtr targetObject, global::System.IntPtr key, bool* hasOwnProperty);
         }
 
         // <summary>Initialize a ModuleRecord from host</summary>
         // <remarks>Bootstrap the module loading process by creating a new module record.</remarks>
         // <param name="referencingModule">The referencingModule as in HostResolveImportedModule (15.2.1.17). nullptr if this is the top level module.</param>
         // <param name="normalizedSpecifier">The host normalized specifier. This is the key to a unique ModuleRecord.</param>
-        // <param name="moduleRecord">The new ModuleRecord created. The host should not try to call this API twice with the same normalizedSpecifier. chakra will return an existing ModuleRecord if the specifier was passed in before.</param>
+        // <param name="moduleRecord">The new ModuleRecord created. The host should not try to call this API twice with the same normalizedSpecifier.                           chakra will return an existing ModuleRecord if the specifier was passed in before.</param>
         public static global::ChakraSharp.JsErrorCode JsInitializeModuleRecord(global::System.IntPtr referencingModule, global::System.IntPtr normalizedSpecifier, out global::System.IntPtr moduleRecord)
         {
             global::System.IntPtr _moduleRecord;
@@ -244,11 +274,7 @@ namespace ChakraSharp
         }
 
         // <summary>Execute module code.</summary>
-        // <remarks>
-        // <para>This method implements 15.2.1.1.6.5, &quot;ModuleEvaluation&quot; concrete method.</para>
-        // <para>When this methid is called, the chakra engine should have notified the host that the module and all its dependent are ready to be executed.</para>
-        // <para>One moduleRecord will be executed only once. Additional execution call on the same moduleRecord will fail.</para>
-        // </remarks>
+        // <remarks>This method implements 15.2.1.1.6.5, &quot;ModuleEvaluation&quot; concrete method.     When this methid is called, the chakra engine should have notified the host that the module and all its dependent are ready to be executed.     One moduleRecord will be executed only once. Additional execution call on the same moduleRecord will fail.</remarks>
         // <param name="requestModule">The module to be executed.</param>
         // <param name="result">The return value of the module.</param>
         public static global::ChakraSharp.JsErrorCode JsModuleEvaluation(global::System.IntPtr requestModule, out global::System.IntPtr result)
@@ -284,22 +310,7 @@ namespace ChakraSharp
         }
 
         // <summary>Returns metadata relating to the exception that caused the runtime of the current context     to be in the exception state and resets the exception state for that runtime. The metadata     includes a reference to the exception itself.</summary>
-        // <remarks>
-        // <para>If the runtime of the current context is not in an exception state, this API will return</para>
-        // <para>JsErrorInvalidArgument. If the runtime is disabled, this will return an exception</para>
-        // <para>indicating that the script was terminated, but it will not clear the exception (the</para>
-        // <para>exception will be cleared if the runtime is re-enabled using</para>
-        // <para>JsEnableRuntimeExecution).</para>
-        // <para></para>
-        // <para>The metadata value is a javascript object with the following properties: exception, the</para>
-        // <para>thrown exception object; line, the 0 indexed line number where the exception was thrown;</para>
-        // <para>column, the 0 indexed column number where the exception was thrown; length, the</para>
-        // <para>source-length of the cause of the exception; source, a string containing the line of</para>
-        // <para>source code where the exception was thrown; and url, a string containing the name of</para>
-        // <para>the script file containing the code that threw the exception.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>If the runtime of the current context is not in an exception state, this API will return     JsErrorInvalidArgument. If the runtime is disabled, this will return an exception     indicating that the script was terminated, but it will not clear the exception (the     exception will be cleared if the runtime is re-enabled using     JsEnableRuntimeExecution).          The metadata value is a javascript object with the following properties: exception, the     thrown exception object; line, the 0 indexed line number where the exception was thrown;     column, the 0 indexed column number where the exception was thrown; length, the     source-length of the cause of the exception; source, a string containing the line of     source code where the exception was thrown; and url, a string containing the name of     the script file containing the code that threw the exception.          Requires an active script context.</remarks>
         // <param name="metadata">The exception metadata for the runtime of the current context.</param>
         public static global::ChakraSharp.JsErrorCode JsGetAndClearExceptionWithMetadata(out global::System.IntPtr metadata)
         {
@@ -311,7 +322,7 @@ namespace ChakraSharp
         }
 
         // <summary>Create JavascriptString variable from ASCII or Utf8 string</summary>
-        // <remarks>Input string can be either ASCII or Utf8</remarks>
+        // <remarks>Requires an active script context.              Input string can be either ASCII or Utf8</remarks>
         // <param name="content">Pointer to string memory.</param>
         // <param name="length">Number of bytes within the string</param>
         // <param name="value">JsValueRef representing the JavascriptString</param>
@@ -325,13 +336,13 @@ namespace ChakraSharp
         }
 
         // <summary>Create JavascriptString variable from Utf16 string</summary>
-        // <remarks>Expects Utf16 string</remarks>
+        // <remarks>Requires an active script context.              Expects Utf16 string</remarks>
         // <param name="content">Pointer to string memory.</param>
         // <param name="length">Number of characters within the string</param>
         // <param name="value">JsValueRef representing the JavascriptString</param>
-        public static global::ChakraSharp.JsErrorCode JsCreateStringUtf16(ref ushort content, ulong length, out global::System.IntPtr value)
+        public static global::ChakraSharp.JsErrorCode JsCreateStringUtf16(ref uint content, ulong length, out global::System.IntPtr value)
         {
-            fixed (ushort* __refParamPtr0 = &content)
+            fixed (uint* __refParamPtr0 = &content)
             {
                 var __arg0 = __refParamPtr0;
                 global::System.IntPtr _value;
@@ -343,11 +354,7 @@ namespace ChakraSharp
         }
 
         // <summary>Write JavascriptString value into C string buffer (Utf8)</summary>
-        // <remarks>
-        // <para>When size of the `buffer` is unknown,</para>
-        // <para>`buffer` argument can be nullptr.</para>
-        // <para>In that case, `length` argument will return the length needed.</para>
-        // </remarks>
+        // <remarks>When size of the `buffer` is unknown,         `buffer` argument can be nullptr.         In that case, `length` argument will return the length needed.</remarks>
         // <param name="value">JavascriptString value</param>
         // <param name="buffer">Pointer to buffer</param>
         // <param name="bufferSize">Buffer size</param>
@@ -363,25 +370,15 @@ namespace ChakraSharp
         }
 
         // <summary>Write string value into Utf16 string buffer</summary>
-        // <remarks>
-        // <para>When size of the `buffer` is unknown,</para>
-        // <para>`buffer` argument can be nullptr.</para>
-        // <para>In that case, `written` argument will return the length needed.</para>
-        // <para></para>
-        // <para>when start is out of range or &lt; 0, returns JsErrorInvalidArgument</para>
-        // <para>and `written` will be equal to 0.</para>
-        // <para>If calculated length is 0 (It can be due to string length or `start`</para>
-        // <para>and length combination), then `written` will be equal to 0 and call</para>
-        // <para>returns JsNoError</para>
-        // </remarks>
+        // <remarks>When size of the `buffer` is unknown,         `buffer` argument can be nullptr.         In that case, `written` argument will return the length needed.              when start is out of range or &lt; 0, returns JsErrorInvalidArgument         and `written` will be equal to 0.         If calculated length is 0 (It can be due to string length or `start`         and length combination), then `written` will be equal to 0 and call         returns JsNoError</remarks>
         // <param name="value">JavascriptString value</param>
         // <param name="start">start offset of buffer</param>
         // <param name="length">length to be written</param>
         // <param name="buffer">Pointer to buffer</param>
         // <param name="written">Total number of characters written</param>
-        public static global::ChakraSharp.JsErrorCode JsCopyStringUtf16(global::System.IntPtr value, int start, int length, ref ushort buffer, out uint written)
+        public static global::ChakraSharp.JsErrorCode JsCopyStringUtf16(global::System.IntPtr value, int start, int length, out uint buffer, out uint written)
         {
-            fixed (ushort* __refParamPtr3 = &buffer)
+            fixed (uint* __refParamPtr3 = &buffer)
             {
                 var __arg3 = __refParamPtr3;
                 fixed (uint* __refParamPtr4 = &written)
@@ -394,16 +391,7 @@ namespace ChakraSharp
         }
 
         // <summary>Parses a script and returns a function representing the script.</summary>
-        // <remarks>
-        // <para>Requires an active script context.</para>
-        // <para></para>
-        // <para>Script source can be either JavascriptString or JavascriptExternalArrayBuffer.</para>
-        // <para>In case it is an ExternalArrayBuffer, and the encoding of the buffer is Utf16,</para>
-        // <para>JsParseScriptAttributeArrayBufferIsUtf16Encoded is expected on parseAttributes.</para>
-        // <para></para>
-        // <para>Use JavascriptExternalArrayBuffer with Utf8/ASCII script source</para>
-        // <para>for better performance and smaller memory footprint.</para>
-        // </remarks>
+        // <remarks>Requires an active script context.              Script source can be either JavascriptString or JavascriptExternalArrayBuffer.         In case it is an ExternalArrayBuffer, and the encoding of the buffer is Utf16,         JsParseScriptAttributeArrayBufferIsUtf16Encoded is expected on parseAttributes.              Use JavascriptExternalArrayBuffer with Utf8/ASCII script source         for better performance and smaller memory footprint.</remarks>
         // <param name="script">The script to run.</param>
         // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
         // <param name="sourceUrl">The location the script came from.</param>
@@ -419,16 +407,7 @@ namespace ChakraSharp
         }
 
         // <summary>Executes a script.</summary>
-        // <remarks>
-        // <para>Requires an active script context.</para>
-        // <para></para>
-        // <para>Script source can be either JavascriptString or JavascriptExternalArrayBuffer.</para>
-        // <para>In case it is an ExternalArrayBuffer, and the encoding of the buffer is Utf16,</para>
-        // <para>JsParseScriptAttributeArrayBufferIsUtf16Encoded is expected on parseAttributes.</para>
-        // <para></para>
-        // <para>Use JavascriptExternalArrayBuffer with Utf8/ASCII script source</para>
-        // <para>for better performance and smaller memory footprint.</para>
-        // </remarks>
+        // <remarks>Requires an active script context.              Script source can be either JavascriptString or JavascriptExternalArrayBuffer.         In case it is an ExternalArrayBuffer, and the encoding of the buffer is Utf16,         JsParseScriptAttributeArrayBufferIsUtf16Encoded is expected on parseAttributes.              Use JavascriptExternalArrayBuffer with Utf8/ASCII script source         for better performance and smaller memory footprint.</remarks>
         // <param name="script">The script to run.</param>
         // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
         // <param name="sourceUrl">The location the script came from</param>
@@ -444,12 +423,8 @@ namespace ChakraSharp
         }
 
         // <summary>Creates the property ID associated with the name.</summary>
-        // <remarks>
-        // <para>Property IDs are specific to a context and cannot be used across contexts.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
-        // <param name="name">The name of the property ID to get or create. The name may consist of only digits. The string is expected to be ASCII / utf8 encoded.</param>
+        // <remarks>Property IDs are specific to a context and cannot be used across contexts.              Requires an active script context.</remarks>
+        // <param name="name">The name of the property ID to get or create. The name may consist of only digits.     The string is expected to be ASCII / utf8 encoded.</param>
         // <param name="length">length of the name in bytes</param>
         // <param name="propertyId">The property ID in this runtime for the given name.</param>
         public static global::ChakraSharp.JsErrorCode JsCreatePropertyId(string name, ulong length, out global::System.IntPtr propertyId)
@@ -462,13 +437,7 @@ namespace ChakraSharp
         }
 
         // <summary>Copies the name associated with the property ID into a buffer.</summary>
-        // <remarks>
-        // <para>Requires an active script context.</para>
-        // <para></para>
-        // <para>When size of the `buffer` is unknown,</para>
-        // <para>`buffer` argument can be nullptr.</para>
-        // <para>`length` argument will return the size needed.</para>
-        // </remarks>
+        // <remarks>Requires an active script context.              When size of the `buffer` is unknown,         `buffer` argument can be nullptr.         `length` argument will return the size needed.</remarks>
         // <param name="propertyId">The property ID to get the name of.</param>
         // <param name="buffer">The buffer holding the name associated with the property ID, encoded as utf8</param>
         // <param name="bufferSize">Size of the buffer.</param>
@@ -484,20 +453,7 @@ namespace ChakraSharp
         }
 
         // <summary>Serializes a parsed script to a buffer than can be reused.</summary>
-        // <remarks>
-        // <para>JsSerializeScript parses a script and then stores the parsed form of the script in a</para>
-        // <para>runtime-independent format. The serialized script then can be deserialized in any</para>
-        // <para>runtime without requiring the script to be re-parsed.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // <para></para>
-        // <para>Script source can be either JavascriptString or JavascriptExternalArrayBuffer.</para>
-        // <para>In case it is an ExternalArrayBuffer, and the encoding of the buffer is Utf16,</para>
-        // <para>JsParseScriptAttributeArrayBufferIsUtf16Encoded is expected on parseAttributes.</para>
-        // <para></para>
-        // <para>Use JavascriptExternalArrayBuffer with Utf8/ASCII script source</para>
-        // <para>for better performance and smaller memory footprint.</para>
-        // </remarks>
+        // <remarks>JsSerializeScript parses a script and then stores the parsed form of the script in a     runtime-independent format. The serialized script then can be deserialized in any     runtime without requiring the script to be re-parsed.          Requires an active script context.              Script source can be either JavascriptString or JavascriptExternalArrayBuffer.         In case it is an ExternalArrayBuffer, and the encoding of the buffer is Utf16,         JsParseScriptAttributeArrayBufferIsUtf16Encoded is expected on parseAttributes.              Use JavascriptExternalArrayBuffer with Utf8/ASCII script source         for better performance and smaller memory footprint.</remarks>
         // <param name="script">The script to serialize</param>
         // <param name="buffer">ArrayBuffer</param>
         // <param name="parseAttributes">Encoding for the script.</param>
@@ -513,8 +469,8 @@ namespace ChakraSharp
         // <summary>Parses a serialized script and returns a function representing the script.     Provides the ability to lazy load the script source only if/when it is needed.</summary>
         // <remarks>Requires an active script context.</remarks>
         // <param name="buffer">The serialized script as an ArrayBuffer (preferably ExternalArrayBuffer).</param>
-        // <param name="scriptLoadCallback">Callback called when the source code of the script needs to be loaded. This is an optional parameter, set to null if not needed.</param>
-        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts. This context will passed into scriptLoadCallback.</param>
+        // <param name="scriptLoadCallback">Callback called when the source code of the script needs to be loaded.     This is an optional parameter, set to null if not needed.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.     This context will passed into scriptLoadCallback.</param>
         // <param name="sourceUrl">The location the script came from.</param>
         // <param name="result">A function representing the script code.</param>
         public static global::ChakraSharp.JsErrorCode JsParseSerialized(global::System.IntPtr buffer, global::ChakraSharp.JsSerializedLoadScriptCallback scriptLoadCallback, ulong sourceContext, global::System.IntPtr sourceUrl, out global::System.IntPtr result)
@@ -528,15 +484,10 @@ namespace ChakraSharp
         }
 
         // <summary>Runs a serialized script.     Provides the ability to lazy load the script source only if/when it is needed.</summary>
-        // <remarks>
-        // <para>Requires an active script context.</para>
-        // <para></para>
-        // <para>The runtime will hold on to the buffer until all instances of any functions created from</para>
-        // <para>the buffer are garbage collected.</para>
-        // </remarks>
+        // <remarks>Requires an active script context.          The runtime will hold on to the buffer until all instances of any functions created from     the buffer are garbage collected.</remarks>
         // <param name="buffer">The serialized script as an ArrayBuffer (preferably ExternalArrayBuffer).</param>
         // <param name="scriptLoadCallback">Callback called when the source code of the script needs to be loaded.</param>
-        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts. This context will passed into scriptLoadCallback.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.     This context will passed into scriptLoadCallback.</param>
         // <param name="sourceUrl">The location the script came from.</param>
         // <param name="result">The result of running the script, if any. This parameter can be null.</param>
         public static global::ChakraSharp.JsErrorCode JsRunSerialized(global::System.IntPtr buffer, global::ChakraSharp.JsSerializedLoadScriptCallback scriptLoadCallback, ulong sourceContext, global::System.IntPtr sourceUrl, out global::System.IntPtr result)
@@ -583,7 +534,7 @@ namespace ChakraSharp
 
         // <summary>Gets a strong reference to the value referred to by a weak reference.</summary>
         // <param name="weakRef">A weak reference.</param>
-        // <param name="value">Reference to the value, or JS_INVALID_REFERENCE if the value is no longer available.</param>
+        // <param name="value">Reference to the value, or JS_INVALID_REFERENCE if the value is     no longer available.</param>
         public static global::ChakraSharp.JsErrorCode JsGetWeakReferenceValue(global::System.IntPtr weakRef, out global::System.IntPtr value)
         {
             global::System.IntPtr _value;
@@ -609,7 +560,7 @@ namespace ChakraSharp
         // <summary>Get the storage object from a SharedArrayBuffer.</summary>
         // <remarks>Requires an active script context.</remarks>
         // <param name="sharedArrayBuffer">The SharedArrayBuffer object.</param>
-        // <param name="sharedContents">The storage object of a SharedArrayBuffer which can be shared between multiple thread. User should call JsReleaseSharedArrayBufferContentHandle after finished using it.</param>
+        // <param name="sharedContents">The storage object of a SharedArrayBuffer which can be shared between multiple thread.     User should call JsReleaseSharedArrayBufferContentHandle after finished using it.</param>
         public static global::ChakraSharp.JsErrorCode JsGetSharedArrayBufferContent(global::System.IntPtr sharedArrayBuffer, out global::System.IntPtr sharedContents)
         {
             global::System.IntPtr _sharedContents;
@@ -644,21 +595,7 @@ namespace ChakraSharp
         }
 
         // <summary>Write JS string value into char string buffer without a null terminator</summary>
-        // <remarks>
-        // <para>When size of the `buffer` is unknown,</para>
-        // <para>`buffer` argument can be nullptr.</para>
-        // <para>In that case, `written` argument will return the length needed.</para>
-        // <para></para>
-        // <para>When start is out of range or &lt; 0, returns JsErrorInvalidArgument</para>
-        // <para>and `written` will be equal to 0.</para>
-        // <para>If calculated length is 0 (It can be due to string length or `start`</para>
-        // <para>and length combination), then `written` will be equal to 0 and call</para>
-        // <para>returns JsNoError</para>
-        // <para></para>
-        // <para>The JS string `value` will be converted one utf16 code point at a time,</para>
-        // <para>and if it has code points that do not fit in one byte, those values</para>
-        // <para>will be truncated.</para>
-        // </remarks>
+        // <remarks>When size of the `buffer` is unknown,         `buffer` argument can be nullptr.         In that case, `written` argument will return the length needed.              When start is out of range or &lt; 0, returns JsErrorInvalidArgument         and `written` will be equal to 0.         If calculated length is 0 (It can be due to string length or `start`         and length combination), then `written` will be equal to 0 and call         returns JsNoError              The JS string `value` will be converted one utf16 code point at a time,         and if it has code points that do not fit in one byte, those values         will be truncated.</remarks>
         // <param name="value">JavascriptString value</param>
         // <param name="start">Start offset of buffer</param>
         // <param name="length">Number of characters to be written</param>
@@ -693,6 +630,137 @@ namespace ChakraSharp
                     arrayBuffer = _arrayBuffer;
                     return __ret;
                 }
+            }
+        }
+
+        // <summary>Determine if one JavaScript value is less than another JavaScript value.</summary>
+        // <remarks>This function is equivalent to the &lt; operator in Javascript.          Requires an active script context.</remarks>
+        // <param name="object1">The first object to compare.</param>
+        // <param name="object2">The second object to compare.</param>
+        // <param name="result">Whether object1 is less than object2.</param>
+        public static global::ChakraSharp.JsErrorCode JsLessThan(global::System.IntPtr object1, global::System.IntPtr object2, out bool result)
+        {
+            fixed (bool* __refParamPtr2 = &result)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsLessThan_0(object1, object2, __arg2);
+                return __ret;
+            }
+        }
+
+        // <summary>Determine if one JavaScript value is less than or equal to another JavaScript value.</summary>
+        // <remarks>This function is equivalent to the &lt;= operator in Javascript.          Requires an active script context.</remarks>
+        // <param name="object1">The first object to compare.</param>
+        // <param name="object2">The second object to compare.</param>
+        // <param name="result">Whether object1 is less than or equal to object2.</param>
+        public static global::ChakraSharp.JsErrorCode JsLessThanOrEqual(global::System.IntPtr object1, global::System.IntPtr object2, out bool result)
+        {
+            fixed (bool* __refParamPtr2 = &result)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsLessThanOrEqual_0(object1, object2, __arg2);
+                return __ret;
+            }
+        }
+
+        // <summary>Gets an object's property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that contains the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="value">The value of the property.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectGetProperty(global::System.IntPtr targetObject, global::System.IntPtr key, out global::System.IntPtr value)
+        {
+            global::System.IntPtr _value;
+            var __arg2 = &_value;
+            var __ret = __Internal.JsObjectGetProperty_0(targetObject, key, __arg2);
+            value = _value;
+            return __ret;
+        }
+
+        // <summary>Puts an object's property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that contains the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="value">The new value of the property.</param>
+        // <param name="useStrictRules">The property set should follow strict mode rules.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectSetProperty(global::System.IntPtr targetObject, global::System.IntPtr key, global::System.IntPtr value, bool useStrictRules)
+        {
+            var __ret = __Internal.JsObjectSetProperty_0(targetObject, key, value, useStrictRules);
+            return __ret;
+        }
+
+        // <summary>Determines whether an object has a property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that may contain the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="hasProperty">Whether the object (or a prototype) has the property.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectHasProperty(global::System.IntPtr targetObject, global::System.IntPtr key, out bool hasProperty)
+        {
+            fixed (bool* __refParamPtr2 = &hasProperty)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsObjectHasProperty_0(targetObject, key, __arg2);
+                return __ret;
+            }
+        }
+
+        // <summary>Defines a new object's own property from a property descriptor.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that has the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="propertyDescriptor">The property descriptor.</param>
+        // <param name="result">Whether the property was defined.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectDefineProperty(global::System.IntPtr targetObject, global::System.IntPtr key, global::System.IntPtr propertyDescriptor, out bool result)
+        {
+            fixed (bool* __refParamPtr3 = &result)
+            {
+                var __arg3 = __refParamPtr3;
+                var __ret = __Internal.JsObjectDefineProperty_0(targetObject, key, propertyDescriptor, __arg3);
+                return __ret;
+            }
+        }
+
+        // <summary>Deletes an object's property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that contains the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="useStrictRules">The property set should follow strict mode rules.</param>
+        // <param name="result">Whether the property was deleted.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectDeleteProperty(global::System.IntPtr targetObject, global::System.IntPtr key, bool useStrictRules, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg3 = &_result;
+            var __ret = __Internal.JsObjectDeleteProperty_0(targetObject, key, useStrictRules, __arg3);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Gets a property descriptor for an object's own property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that has the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="propertyDescriptor">The property descriptor.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectGetOwnPropertyDescriptor(global::System.IntPtr targetObject, global::System.IntPtr key, out global::System.IntPtr propertyDescriptor)
+        {
+            global::System.IntPtr _propertyDescriptor;
+            var __arg2 = &_propertyDescriptor;
+            var __ret = __Internal.JsObjectGetOwnPropertyDescriptor_0(targetObject, key, __arg2);
+            propertyDescriptor = _propertyDescriptor;
+            return __ret;
+        }
+
+        // <summary>Determines whether an object has a non-inherited property.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="object">The object that may contain the property.</param>
+        // <param name="key">The key (JavascriptString) to the property.</param>
+        // <param name="hasOwnProperty">Whether the object has the non-inherited property.</param>
+        public static global::ChakraSharp.JsErrorCode JsObjectHasOwnProperty(global::System.IntPtr targetObject, global::System.IntPtr key, out bool hasOwnProperty)
+        {
+            fixed (bool* __refParamPtr2 = &hasOwnProperty)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsObjectHasOwnProperty_0(targetObject, key, __arg2);
+                return __ret;
             }
         }
     }
@@ -752,12 +820,14 @@ namespace ChakraSharp
         JsErrorPropertyNotSymbol = 65559,
         // <summary>A hosting API that operates on string property ids but was called with a non-string property id.     The error code is returned by existing JsGetPropertyNamefromId if the function is called with non-string property id.</summary>
         JsErrorPropertyNotString = 65560,
-        // <summary>Module evaulation is called in wrong context.</summary>
+        // <summary>Module evaluation is called in wrong context.</summary>
         JsErrorInvalidContext = 65561,
-        // <summary>Module evaulation is called in wrong context.</summary>
+        // <summary>Module evaluation is called in wrong context.</summary>
         JsInvalidModuleHostInfoKind = 65562,
         // <summary>Module was parsed already when JsParseModuleSource is called.</summary>
         JsErrorModuleParsed = 65563,
+        // <summary>Argument passed to JsCreateWeakReference is a primitive that is not managed by the GC.     No weak reference is required, the value will never be collected.</summary>
+        JsNoWeakRefRequired = 65564,
         // <summary>Category of errors that relates to errors occurring within the engine itself.</summary>
         JsErrorCategoryEngine = 131072,
         // <summary>The Chakra engine has run out of memory.</summary>
@@ -792,7 +862,7 @@ namespace ChakraSharp
         JsErrorDiagInvalidHandle = 327684,
         // <summary>The object for which the debugging API was called was not found</summary>
         JsErrorDiagObjectNotFound = 327685,
-        // <summary>VM was unable to perfom the request action</summary>
+        // <summary>VM was unable to perform the request action</summary>
         JsErrorDiagUnableToPerformAction = 327686
     }
 
@@ -815,7 +885,9 @@ namespace ChakraSharp
         // <summary>Runtime will enable all experimental features.</summary>
         JsRuntimeAttributeEnableExperimentalFeatures = 32,
         // <summary>Calling JsSetException will also dispatch the exception to the script debugger     (if any) giving the debugger a chance to break on the exception.</summary>
-        JsRuntimeAttributeDispatchSetExceptionsToDebugger = 64
+        JsRuntimeAttributeDispatchSetExceptionsToDebugger = 64,
+        // <summary>Disable Failfast fatal error on OOM</summary>
+        JsRuntimeAttributeDisableFatalOnOOM = 128
     }
 
     // <summary>The type of a typed JavaScript array.</summary>
@@ -903,52 +975,21 @@ namespace ChakraSharp
         JsDataView = 12
     }
 
-    public class HANDLE { }
-
     // <summary>A handle to a Chakra runtime.</summary>
-    // <remarks>
-    // <para>Each Chakra runtime has its own independent execution engine, JIT compiler, and garbage</para>
-    // <para>collected heap. As such, each runtime is completely isolated from other runtimes.</para>
-    // <para></para>
-    // <para>Runtimes can be used on any thread, but only one thread can call into a runtime at any</para>
-    // <para>time.</para>
-    // <para></para>
-    // <para>NOTE: A JsRuntimeHandle, unlike other object references in the Chakra hosting API,</para>
-    // <para>is not garbage collected since it contains the garbage collected heap itself. A runtime</para>
-    // <para>will continue to exist until JsDisposeRuntime is called.</para>
-    // </remarks>
+    // <remarks>Each Chakra runtime has its own independent execution engine, JIT compiler, and garbage     collected heap. As such, each runtime is completely isolated from other runtimes.          Runtimes can be used on any thread, but only one thread can call into a runtime at any     time.          NOTE: A JsRuntimeHandle, unlike other object references in the Chakra hosting API,     is not garbage collected since it contains the garbage collected heap itself. A runtime     will continue to exist until JsDisposeRuntime is called.</remarks>
     public class JsRuntimeHandle { }
 
     // <summary>A reference to an object owned by the Chakra garbage collector.</summary>
-    // <remarks>
-    // <para>A Chakra runtime will automatically track JsRef references as long as they are</para>
-    // <para>stored in local variables or in parameters (i.e. on the stack). Storing a JsRef</para>
-    // <para>somewhere other than on the stack requires calling JsAddRef and JsRelease to</para>
-    // <para>manage the lifetime of the object, otherwise the garbage collector may free the object</para>
-    // <para>while it is still in use.</para>
-    // </remarks>
+    // <remarks>A Chakra runtime will automatically track JsRef references as long as they are     stored in local variables or in parameters (i.e. on the stack). Storing a JsRef     somewhere other than on the stack requires calling JsAddRef and JsRelease to     manage the lifetime of the object, otherwise the garbage collector may free the object     while it is still in use.</remarks>
     public class JsRef { }
 
     // <summary>A reference to a script context.</summary>
-    // <remarks>
-    // <para>Each script context contains its own global object, distinct from the global object in</para>
-    // <para>other script contexts.</para>
-    // <para></para>
-    // <para>Many Chakra hosting APIs require an &quot;active&quot; script context, which can be set using</para>
-    // <para>JsSetCurrentContext. Chakra hosting APIs that require a current context to be set</para>
-    // <para>will note that explicitly in their documentation.</para>
-    // </remarks>
+    // <remarks>Each script context contains its own global object, distinct from the global object in     other script contexts.          Many Chakra hosting APIs require an &quot;active&quot; script context, which can be set using     JsSetCurrentContext. Chakra hosting APIs that require a current context to be set     will note that explicitly in their documentation.</remarks>
     // <summary>A reference to a JavaScript value.</summary>
-    // <remarks>
-    // <para>A JavaScript value is one of the following types of values: undefined, null, Boolean,</para>
-    // <para>string, number, or object.</para>
-    // </remarks>
+    // <remarks>A JavaScript value is one of the following types of values: undefined, null, Boolean,     string, number, or object.</remarks>
     // <summary>A cookie that identifies a script for debugging purposes.</summary>
     // <summary>A property identifier.</summary>
-    // <remarks>
-    // <para>Property identifiers are used to refer to properties of JavaScript objects instead of using</para>
-    // <para>strings.</para>
-    // </remarks>
+    // <remarks>Property identifiers are used to refer to properties of JavaScript objects instead of using     strings.</remarks>
     // <summary>User implemented callback routine for memory allocation events</summary>
     // <remarks>Use JsSetRuntimeMemoryAllocationCallback to register this callback.</remarks>
     // <param name="callbackState">The state passed to JsSetRuntimeMemoryAllocationCallback.</param>
@@ -971,21 +1012,13 @@ namespace ChakraSharp
     public unsafe delegate void JsObjectBeforeCollectCallback(global::System.IntPtr @ref, global::System.IntPtr callbackState);
 
     // <summary>A background work item callback.</summary>
-    // <remarks>
-    // <para>This is passed to the host's thread service (if provided) to allow the host to</para>
-    // <para>invoke the work item callback on the background thread of its choice.</para>
-    // </remarks>
+    // <remarks>This is passed to the host's thread service (if provided) to allow the host to     invoke the work item callback on the background thread of its choice.</remarks>
     // <param name="callbackState">Data argument passed to the thread service.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public unsafe delegate void JsBackgroundWorkItemCallback(global::System.IntPtr callbackState);
 
     // <summary>A thread service callback.</summary>
-    // <remarks>
-    // <para>The host can specify a background thread service when calling JsCreateRuntime. If</para>
-    // <para>specified, then background work items will be passed to the host using this callback. The</para>
-    // <para>host is expected to either begin executing the background work item immediately and return</para>
-    // <para>true or return false and the runtime will handle the work item in-thread.</para>
-    // </remarks>
+    // <remarks>The host can specify a background thread service when calling JsCreateRuntime. If     specified, then background work items will be passed to the host using this callback. The     host is expected to either begin executing the background work item immediately and return     true or return false and the runtime will handle the work item in-thread.</remarks>
     // <param name="callback">The callback for the background work item.</param>
     // <param name="callbackState">The data argument to be passed to the callback.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -1011,12 +1044,7 @@ namespace ChakraSharp
     public unsafe delegate global::System.IntPtr JsNativeFunction(global::System.IntPtr callee, bool isConstructCall, global::System.IntPtr arguments, ushort argumentCount, global::System.IntPtr callbackState);
 
     // <summary>A promise continuation callback.</summary>
-    // <remarks>
-    // <para>The host can specify a promise continuation callback in JsSetPromiseContinuationCallback. If</para>
-    // <para>a script creates a task to be run later, then the promise continuation callback will be called with</para>
-    // <para>the task and the task should be put in a FIFO queue, to be run when the current script is</para>
-    // <para>done executing.</para>
-    // </remarks>
+    // <remarks>The host can specify a promise continuation callback in JsSetPromiseContinuationCallback. If     a script creates a task to be run later, then the promise continuation callback will be called with     the task and the task should be put in a FIFO queue, to be run when the current script is     done executing.</remarks>
     // <param name="task">The task, represented as a JavaScript function.</param>
     // <param name="callbackState">The data argument to be passed to the callback.</param>
     [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -1493,10 +1521,7 @@ namespace ChakraSharp
         }
 
         // <summary>Creates a new runtime.</summary>
-        // <remarks>
-        // <para>In the edge-mode binary, chakra.dll, this function lacks the runtimeVersion</para>
-        // <para>parameter (compare to jsrt9.h).</para>
-        // </remarks>
+        // <remarks>In the edge-mode binary, chakra.dll, this function lacks the runtimeVersion parameter (compare to jsrt9.h).</remarks>
         // <param name="attributes">The attributes of the runtime to be created.</param>
         // <param name="threadService">The thread service for the runtime. Can be null.</param>
         // <param name="runtime">The runtime created.</param>
@@ -1519,11 +1544,7 @@ namespace ChakraSharp
         }
 
         // <summary>Disposes a runtime.</summary>
-        // <remarks>
-        // <para>Once a runtime has been disposed, all resources owned by it are invalid and cannot be used.</para>
-        // <para>If the runtime is active (i.e. it is set to be current on a particular thread), it cannot</para>
-        // <para>be disposed.</para>
-        // </remarks>
+        // <remarks>Once a runtime has been disposed, all resources owned by it are invalid and cannot be used.     If the runtime is active (i.e. it is set to be current on a particular thread), it cannot     be disposed.</remarks>
         // <param name="runtime">The runtime to dispose.</param>
         public static global::ChakraSharp.JsErrorCode JsDisposeRuntime(global::System.IntPtr runtime)
         {
@@ -1532,10 +1553,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the current memory usage for a runtime.</summary>
-        // <remarks>
-        // <para>Memory usage can be always be retrieved, regardless of whether or not the runtime is active</para>
-        // <para>on another thread.</para>
-        // </remarks>
+        // <remarks>Memory usage can be always be retrieved, regardless of whether or not the runtime is active     on another thread.</remarks>
         // <param name="runtime">The runtime whose memory usage is to be retrieved.</param>
         // <param name="memoryUsage">The runtime's current memory usage, in bytes.</param>
         public static global::ChakraSharp.JsErrorCode JsGetRuntimeMemoryUsage(global::System.IntPtr runtime, out uint memoryUsage)
@@ -1549,10 +1567,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the current memory limit for a runtime.</summary>
-        // <remarks>
-        // <para>The memory limit of a runtime can be always be retrieved, regardless of whether or not the</para>
-        // <para>runtime is active on another thread.</para>
-        // </remarks>
+        // <remarks>The memory limit of a runtime can be always be retrieved, regardless of whether or not the     runtime is active on another thread.</remarks>
         // <param name="runtime">The runtime whose memory limit is to be retrieved.</param>
         // <param name="memoryLimit">The runtime's current memory limit, in bytes, or -1 if no limit has been set.</param>
         public static global::ChakraSharp.JsErrorCode JsGetRuntimeMemoryLimit(global::System.IntPtr runtime, out uint memoryLimit)
@@ -1566,16 +1581,7 @@ namespace ChakraSharp
         }
 
         // <summary>Sets the current memory limit for a runtime.</summary>
-        // <remarks>
-        // <para>A memory limit will cause any operation which exceeds the limit to fail with an &quot;out of</para>
-        // <para>memory&quot; error. Setting a runtime's memory limit to -1 means that the runtime has no memory</para>
-        // <para>limit. New runtimes  default to having no memory limit. If the new memory limit exceeds</para>
-        // <para>current usage, the call will succeed and any future allocations in this runtime will fail</para>
-        // <para>until the runtime's memory usage drops below the limit.</para>
-        // <para></para>
-        // <para>A runtime's memory limit can be always be set, regardless of whether or not the runtime is</para>
-        // <para>active on another thread.</para>
-        // </remarks>
+        // <remarks>A memory limit will cause any operation which exceeds the limit to fail with an &quot;out of     memory&quot; error. Setting a runtime's memory limit to -1 means that the runtime has no memory     limit. New runtimes  default to having no memory limit. If the new memory limit exceeds     current usage, the call will succeed and any future allocations in this runtime will fail     until the runtime's memory usage drops below the limit.          A runtime's memory limit can be always be set, regardless of whether or not the runtime is     active on another thread.</remarks>
         // <param name="runtime">The runtime whose memory limit is to be set.</param>
         // <param name="memoryLimit">The new runtime memory limit, in bytes, or -1 for no memory limit.</param>
         public static global::ChakraSharp.JsErrorCode JsSetRuntimeMemoryLimit(global::System.IntPtr runtime, ulong memoryLimit)
@@ -1585,19 +1591,7 @@ namespace ChakraSharp
         }
 
         // <summary>Sets a memory allocation callback for specified runtime</summary>
-        // <remarks>
-        // <para>Registering a memory allocation callback will cause the runtime to call back to the host</para>
-        // <para>whenever it acquires memory from, or releases memory to, the OS. The callback routine is</para>
-        // <para>called before the runtime memory manager allocates a block of memory. The allocation will</para>
-        // <para>be rejected if the callback returns false. The runtime memory manager will also invoke the</para>
-        // <para>callback routine after freeing a block of memory, as well as after allocation failures.</para>
-        // <para></para>
-        // <para>The callback is invoked on the current runtime execution thread, therefore execution is</para>
-        // <para>blocked until the callback completes.</para>
-        // <para></para>
-        // <para>The return value of the callback is not stored; previously rejected allocations will not</para>
-        // <para>prevent the runtime from invoking the callback again later for new memory allocations.</para>
-        // </remarks>
+        // <remarks>Registering a memory allocation callback will cause the runtime to call back to the host     whenever it acquires memory from, or releases memory to, the OS. The callback routine is     called before the runtime memory manager allocates a block of memory. The allocation will     be rejected if the callback returns false. The runtime memory manager will also invoke the     callback routine after freeing a block of memory, as well as after allocation failures.          The callback is invoked on the current runtime execution thread, therefore execution is     blocked until the callback completes.          The return value of the callback is not stored; previously rejected allocations will not     prevent the runtime from invoking the callback again later for new memory allocations.</remarks>
         // <param name="runtime">The runtime for which to register the allocation callback.</param>
         // <param name="callbackState">User provided state that will be passed back to the callback.</param>
         // <param name="allocationCallback">Memory allocation callback to be called for memory allocation events.</param>
@@ -1609,13 +1603,7 @@ namespace ChakraSharp
         }
 
         // <summary>Sets a callback function that is called by the runtime before garbage collection.</summary>
-        // <remarks>
-        // <para>The callback is invoked on the current runtime execution thread, therefore execution is</para>
-        // <para>blocked until the callback completes.</para>
-        // <para></para>
-        // <para>The callback can be used by hosts to prepare for garbage collection. For example, by</para>
-        // <para>releasing unnecessary references on Chakra objects.</para>
-        // </remarks>
+        // <remarks>The callback is invoked on the current runtime execution thread, therefore execution is     blocked until the callback completes.          The callback can be used by hosts to prepare for garbage collection. For example, by     releasing unnecessary references on Chakra objects.</remarks>
         // <param name="runtime">The runtime for which to register the allocation callback.</param>
         // <param name="callbackState">User provided state that will be passed back to the callback.</param>
         // <param name="beforeCollectCallback">The callback function being set.</param>
@@ -1627,11 +1615,7 @@ namespace ChakraSharp
         }
 
         // <summary>Adds a reference to a garbage collected object.</summary>
-        // <remarks>
-        // <para>This only needs to be called on JsRef handles that are not going to be stored</para>
-        // <para>somewhere on the stack. Calling JsAddRef ensures that the object the JsRef</para>
-        // <para>refers to will not be freed until JsRelease is called.</para>
-        // </remarks>
+        // <remarks>This only needs to be called on JsRef handles that are not going to be stored     somewhere on the stack. Calling JsAddRef ensures that the object the JsRef     refers to will not be freed until JsRelease is called.</remarks>
         // <param name="ref">The object to add a reference to.</param>
         // <param name="count">The object's new reference count (can pass in null).</param>
         public static global::ChakraSharp.JsErrorCode JsAddRef(global::System.IntPtr @ref, out uint count)
@@ -1659,13 +1643,10 @@ namespace ChakraSharp
         }
 
         // <summary>Sets a callback function that is called by the runtime before garbage collection of     an object.</summary>
-        // <remarks>
-        // <para>The callback is invoked on the current runtime execution thread, therefore execution is</para>
-        // <para>blocked until the callback completes.</para>
-        // </remarks>
+        // <remarks>The callback is invoked on the current runtime execution thread, therefore execution is     blocked until the callback completes.</remarks>
         // <param name="ref">The object for which to register the callback.</param>
         // <param name="callbackState">User provided state that will be passed back to the callback.</param>
-        // <param name="objectBeforeCollectCallback">The callback function being set. Use null to clear previously registered callback.</param>
+        // <param name="objectBeforeCollectCallback">The callback function being set. Use null to clear     previously registered callback.</param>
         public static global::ChakraSharp.JsErrorCode JsSetObjectBeforeCollectCallback(global::System.IntPtr @ref, global::System.IntPtr callbackState, global::ChakraSharp.JsObjectBeforeCollectCallback objectBeforeCollectCallback)
         {
             var __arg2 = objectBeforeCollectCallback == null ? global::System.IntPtr.Zero : Marshal.GetFunctionPointerForDelegate(objectBeforeCollectCallback);
@@ -1674,10 +1655,7 @@ namespace ChakraSharp
         }
 
         // <summary>Creates a script context for running scripts.</summary>
-        // <remarks>
-        // <para>Each script context has its own global object that is isolated from all other script</para>
-        // <para>contexts.</para>
-        // </remarks>
+        // <remarks>Each script context has its own global object that is isolated from all other script     contexts.</remarks>
         // <param name="runtime">The runtime the script context is being created in.</param>
         // <param name="newContext">The created script context.</param>
         public static global::ChakraSharp.JsErrorCode JsCreateContext(global::System.IntPtr runtime, out global::System.IntPtr newContext)
@@ -1754,17 +1732,8 @@ namespace ChakraSharp
         }
 
         // <summary>Tells the runtime to do any idle processing it need to do.</summary>
-        // <remarks>
-        // <para>If idle processing has been enabled for the current runtime, calling JsIdle will</para>
-        // <para>inform the current runtime that the host is idle and that the runtime can perform</para>
-        // <para>memory cleanup tasks.</para>
-        // <para>JsIdle can also return the number of system ticks until there will be more idle work</para>
-        // <para>for the runtime to do. Calling JsIdle before this number of ticks has passed will do</para>
-        // <para>no work.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
-        // <param name="nextIdleTick">The next system tick when there will be more idle work to do. Can be null. Returns the maximum number of ticks if there no upcoming idle work to do.</param>
+        // <remarks>If idle processing has been enabled for the current runtime, calling JsIdle will     inform the current runtime that the host is idle and that the runtime can perform     memory cleanup tasks.     JsIdle can also return the number of system ticks until there will be more idle work     for the runtime to do. Calling JsIdle before this number of ticks has passed will do     no work.          Requires an active script context.</remarks>
+        // <param name="nextIdleTick">The next system tick when there will be more idle work to do. Can be null. Returns the     maximum number of ticks if there no upcoming idle work to do.</param>
         public static global::ChakraSharp.JsErrorCode JsIdle(out uint nextIdleTick)
         {
             fixed (uint* __refParamPtr0 = &nextIdleTick)
@@ -1802,11 +1771,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the property ID associated with the symbol.</summary>
-        // <remarks>
-        // <para>Property IDs are specific to a context and cannot be used across contexts.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>Property IDs are specific to a context and cannot be used across contexts.          Requires an active script context.</remarks>
         // <param name="symbol">The symbol whose property ID is being retrieved.</param>
         // <param name="propertyId">The property ID for the given symbol.</param>
         public static global::ChakraSharp.JsErrorCode JsGetPropertyIdFromSymbol(global::System.IntPtr symbol, out global::System.IntPtr propertyId)
@@ -1970,10 +1935,7 @@ namespace ChakraSharp
         }
 
         // <summary>Retrieves the double value of a number value.</summary>
-        // <remarks>
-        // <para>This function retrieves the value of a number value. It will fail with</para>
-        // <para>JsErrorInvalidArgument if the type of the value is not number.</para>
-        // </remarks>
+        // <remarks>This function retrieves the value of a number value. It will fail with     JsErrorInvalidArgument if the type of the value is not number.</remarks>
         // <param name="value">The number value to convert to a double value.</param>
         // <param name="doubleValue">The double value.</param>
         public static global::ChakraSharp.JsErrorCode JsNumberToDouble(global::System.IntPtr value, out double doubleValue)
@@ -1987,10 +1949,7 @@ namespace ChakraSharp
         }
 
         // <summary>Retrieves the int value of a number value.</summary>
-        // <remarks>
-        // <para>This function retrieves the value of a number value and converts to an int value.</para>
-        // <para>It will fail with JsErrorInvalidArgument if the type of the value is not number.</para>
-        // </remarks>
+        // <remarks>This function retrieves the value of a number value and converts to an int value.     It will fail with JsErrorInvalidArgument if the type of the value is not number.</remarks>
         // <param name="value">The number value to convert to an int value.</param>
         // <param name="intValue">The int value.</param>
         public static global::ChakraSharp.JsErrorCode JsNumberToInt(global::System.IntPtr value, out int intValue)
@@ -2351,11 +2310,7 @@ namespace ChakraSharp
         }
 
         // <summary>Compare two JavaScript values for equality.</summary>
-        // <remarks>
-        // <para>This function is equivalent to the == operator in Javascript.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>This function is equivalent to the == operator in Javascript.          Requires an active script context.</remarks>
         // <param name="object1">The first object to compare.</param>
         // <param name="object2">The second object to compare.</param>
         // <param name="result">Whether the values are equal.</param>
@@ -2370,11 +2325,7 @@ namespace ChakraSharp
         }
 
         // <summary>Compare two JavaScript values for strict equality.</summary>
-        // <remarks>
-        // <para>This function is equivalent to the === operator in Javascript.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>This function is equivalent to the === operator in Javascript.          Requires an active script context.</remarks>
         // <param name="object1">The first object to compare.</param>
         // <param name="object2">The second object to compare.</param>
         // <param name="result">Whether the values are strictly equal.</param>
@@ -2403,7 +2354,7 @@ namespace ChakraSharp
 
         // <summary>Retrieves the data from an external object.</summary>
         // <param name="object">The external object.</param>
-        // <param name="externalData">The external data stored in the object. Can be null if no external data is stored in the object.</param>
+        // <param name="externalData">The external data stored in the object. Can be null if no external data is stored in the     object.</param>
         public static global::ChakraSharp.JsErrorCode JsGetExternalData(global::System.IntPtr targetObject, out global::System.IntPtr externalData)
         {
             global::System.IntPtr _externalData;
@@ -2415,7 +2366,7 @@ namespace ChakraSharp
 
         // <summary>Sets the external data on an external object.</summary>
         // <param name="object">The external object.</param>
-        // <param name="externalData">The external data to be stored in the object. Can be null if no external data is to be stored in the object.</param>
+        // <param name="externalData">The external data to be stored in the object. Can be null if no external data is     to be stored in the object.</param>
         public static global::ChakraSharp.JsErrorCode JsSetExternalData(global::System.IntPtr targetObject, global::System.IntPtr externalData)
         {
             var __ret = __Internal.JsSetExternalData_0(targetObject, externalData);
@@ -2466,17 +2417,11 @@ namespace ChakraSharp
         }
 
         // <summary>Creates a Javascript typed array object.</summary>
-        // <remarks>
-        // <para>The baseArray can be an ArrayBuffer, another typed array, or a JavaScript</para>
-        // <para>Array. The returned typed array will use the baseArray if it is an ArrayBuffer, or</para>
-        // <para>otherwise create and use a copy of the underlying source array.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>The baseArray can be an ArrayBuffer, another typed array, or a JavaScript     Array. The returned typed array will use the baseArray if it is an ArrayBuffer, or     otherwise create and use a copy of the underlying source array.          Requires an active script context.</remarks>
         // <param name="arrayType">The type of the array to create.</param>
         // <param name="baseArray">The base array of the new array. Use JS_INVALID_REFERENCE if no base array.</param>
-        // <param name="byteOffset">The offset in bytes from the start of baseArray (ArrayBuffer) for result typed array to reference. Only applicable when baseArray is an ArrayBuffer object. Must be 0 otherwise.</param>
-        // <param name="elementLength">The number of elements in the array. Only applicable when creating a new typed array without baseArray (baseArray is JS_INVALID_REFERENCE) or when baseArray is an ArrayBuffer object. Must be 0 otherwise.</param>
+        // <param name="byteOffset">The offset in bytes from the start of baseArray (ArrayBuffer) for result typed array to reference.     Only applicable when baseArray is an ArrayBuffer object. Must be 0 otherwise.</param>
+        // <param name="elementLength">The number of elements in the array. Only applicable when creating a new typed array without     baseArray (baseArray is JS_INVALID_REFERENCE) or when baseArray is an ArrayBuffer object.     Must be 0 otherwise.</param>
         // <param name="result">The new typed array object.</param>
         public static global::ChakraSharp.JsErrorCode JsCreateTypedArray(global::ChakraSharp.JsTypedArrayType arrayType, global::System.IntPtr baseArray, uint byteOffset, uint elementLength, out global::System.IntPtr result)
         {
@@ -2530,7 +2475,7 @@ namespace ChakraSharp
 
         // <summary>Obtains the underlying memory storage used by an ArrayBuffer.</summary>
         // <param name="arrayBuffer">The ArrayBuffer instance.</param>
-        // <param name="buffer">The ArrayBuffer's buffer. The lifetime of the buffer returned is the same as the lifetime of the the ArrayBuffer. The buffer pointer does not count as a reference to the ArrayBuffer for the purpose of garbage collection.</param>
+        // <param name="buffer">The ArrayBuffer's buffer. The lifetime of the buffer returned is the same as the lifetime of the     the ArrayBuffer. The buffer pointer does not count as a reference to the ArrayBuffer for the purpose     of garbage collection.</param>
         // <param name="bufferLength">The number of bytes in the buffer.</param>
         public static global::ChakraSharp.JsErrorCode JsGetArrayBufferStorage(global::System.IntPtr arrayBuffer, out global::System.IntPtr buffer, out uint bufferLength)
         {
@@ -2547,7 +2492,7 @@ namespace ChakraSharp
 
         // <summary>Obtains the underlying memory storage used by a typed array.</summary>
         // <param name="typedArray">The typed array instance.</param>
-        // <param name="buffer">The array's buffer. The lifetime of the buffer returned is the same as the lifetime of the the array. The buffer pointer does not count as a reference to the array for the purpose of garbage collection.</param>
+        // <param name="buffer">The array's buffer. The lifetime of the buffer returned is the same as the lifetime of the     the array. The buffer pointer does not count as a reference to the array for the purpose     of garbage collection.</param>
         // <param name="bufferLength">The number of bytes in the buffer.</param>
         // <param name="arrayType">The type of the array.</param>
         // <param name="elementSize">The size of an element of the array.</param>
@@ -2573,7 +2518,7 @@ namespace ChakraSharp
 
         // <summary>Obtains the underlying memory storage used by a DataView.</summary>
         // <param name="dataView">The DataView instance.</param>
-        // <param name="buffer">The DataView's buffer. The lifetime of the buffer returned is the same as the lifetime of the the DataView. The buffer pointer does not count as a reference to the DataView for the purpose of garbage collection.</param>
+        // <param name="buffer">The DataView's buffer. The lifetime of the buffer returned is the same as the lifetime of the     the DataView. The buffer pointer does not count as a reference to the DataView for the purpose     of garbage collection.</param>
         // <param name="bufferLength">The number of bytes in the buffer.</param>
         public static global::ChakraSharp.JsErrorCode JsGetDataViewStorage(global::System.IntPtr dataView, out global::System.IntPtr buffer, out uint bufferLength)
         {
@@ -2589,10 +2534,7 @@ namespace ChakraSharp
         }
 
         // <summary>Invokes a function.</summary>
-        // <remarks>
-        // <para>Requires thisArg as first argument of arguments.</para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>Requires thisArg as first argument of arguments.     Requires an active script context.</remarks>
         // <param name="function">The function to invoke.</param>
         // <param name="arguments">The arguments to the call.</param>
         // <param name="argumentCount">The number of arguments being passed in to the function.</param>
@@ -2731,18 +2673,7 @@ namespace ChakraSharp
         }
 
         // <summary>Determines whether the runtime of the current context is in an exception state.</summary>
-        // <remarks>
-        // <para>If a call into the runtime results in an exception (either as the result of running a</para>
-        // <para>script or due to something like a conversion failure), the runtime is placed into an</para>
-        // <para>&quot;exception state.&quot; All calls into any context created by the runtime (except for the</para>
-        // <para>exception APIs) will fail with JsErrorInExceptionState until the exception is</para>
-        // <para>cleared.</para>
-        // <para></para>
-        // <para>If the runtime of the current context is in the exception state when a callback returns</para>
-        // <para>into the engine, the engine will automatically rethrow the exception.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>If a call into the runtime results in an exception (either as the result of running a     script or due to something like a conversion failure), the runtime is placed into an     &quot;exception state.&quot; All calls into any context created by the runtime (except for the     exception APIs) will fail with JsErrorInExceptionState until the exception is     cleared.          If the runtime of the current context is in the exception state when a callback returns     into the engine, the engine will automatically rethrow the exception.          Requires an active script context.</remarks>
         // <param name="hasException">Whether the runtime of the current context is in the exception state.</param>
         public static global::ChakraSharp.JsErrorCode JsHasException(out bool hasException)
         {
@@ -2755,15 +2686,7 @@ namespace ChakraSharp
         }
 
         // <summary>Returns the exception that caused the runtime of the current context to be in the     exception state and resets the exception state for that runtime.</summary>
-        // <remarks>
-        // <para>If the runtime of the current context is not in an exception state, this API will return</para>
-        // <para>JsErrorInvalidArgument. If the runtime is disabled, this will return an exception</para>
-        // <para>indicating that the script was terminated, but it will not clear the exception (the</para>
-        // <para>exception will be cleared if the runtime is re-enabled using</para>
-        // <para>JsEnableRuntimeExecution).</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>If the runtime of the current context is not in an exception state, this API will return     JsErrorInvalidArgument. If the runtime is disabled, this will return an exception     indicating that the script was terminated, but it will not clear the exception (the     exception will be cleared if the runtime is re-enabled using     JsEnableRuntimeExecution).          Requires an active script context.</remarks>
         // <param name="exception">The exception for the runtime of the current context.</param>
         public static global::ChakraSharp.JsErrorCode JsGetAndClearException(out global::System.IntPtr exception)
         {
@@ -2775,12 +2698,7 @@ namespace ChakraSharp
         }
 
         // <summary>Sets the runtime of the current context to an exception state.</summary>
-        // <remarks>
-        // <para>If the runtime of the current context is already in an exception state, this API will</para>
-        // <para>return JsErrorInExceptionState.</para>
-        // <para></para>
-        // <para>Requires an active script context.</para>
-        // </remarks>
+        // <remarks>If the runtime of the current context is already in an exception state, this API will     return JsErrorInExceptionState.          Requires an active script context.</remarks>
         // <param name="exception">The JavaScript exception to set for the runtime of the current context.</param>
         public static global::ChakraSharp.JsErrorCode JsSetException(global::System.IntPtr exception)
         {
@@ -2789,16 +2707,7 @@ namespace ChakraSharp
         }
 
         // <summary>Suspends script execution and terminates any running scripts in a runtime.</summary>
-        // <remarks>
-        // <para>Calls to a suspended runtime will fail until JsEnableRuntimeExecution is called.</para>
-        // <para></para>
-        // <para>This API does not have to be called on the thread the runtime is active on. Although the</para>
-        // <para>runtime will be set into a suspended state, an executing script may not be suspended</para>
-        // <para>immediately; a running script will be terminated with an uncatchable exception as soon as</para>
-        // <para>possible.</para>
-        // <para></para>
-        // <para>Suspending execution in a runtime that is already suspended is a no-op.</para>
-        // </remarks>
+        // <remarks>Calls to a suspended runtime will fail until JsEnableRuntimeExecution is called.          This API does not have to be called on the thread the runtime is active on. Although the     runtime will be set into a suspended state, an executing script may not be suspended     immediately; a running script will be terminated with an uncatchable exception as soon as     possible.          Suspending execution in a runtime that is already suspended is a no-op.</remarks>
         // <param name="runtime">The runtime to be suspended.</param>
         public static global::ChakraSharp.JsErrorCode JsDisableRuntimeExecution(global::System.IntPtr runtime)
         {
@@ -2807,10 +2716,7 @@ namespace ChakraSharp
         }
 
         // <summary>Enables script execution in a runtime.</summary>
-        // <remarks>
-        // <para>Enabling script execution in a runtime that already has script execution enabled is a</para>
-        // <para>no-op.</para>
-        // </remarks>
+        // <remarks>Enabling script execution in a runtime that already has script execution enabled is a     no-op.</remarks>
         // <param name="runtime">The runtime to be enabled.</param>
         public static global::ChakraSharp.JsErrorCode JsEnableRuntimeExecution(global::System.IntPtr runtime)
         {
@@ -2866,6 +2772,281 @@ namespace ChakraSharp
             {
                 var __ptr = (ulong*)CppSharp.SymbolResolver.ResolveSymbol("ChakraCore", "JS_SOURCE_CONTEXT_NONE");
                 return *__ptr;
+            }
+        }
+    }
+
+    // <summary>Called by the runtime to load the source code of the serialized script.     The caller must keep the script buffer valid until the JsSerializedScriptUnloadCallback.     This callback is only supported by the Win32 version of the API</summary>
+    // <param name="sourceContext">The context passed to Js[Parse|Run]SerializedScriptWithCallback</param>
+    // <param name="scriptBuffer">The script returned.</param>
+    [SuppressUnmanagedCodeSecurity, UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    public unsafe delegate bool JsSerializedScriptLoadSourceCallback(ulong sourceContext, char** scriptBuffer);
+
+    public unsafe partial class ChakraCommonWindows
+    {
+        public partial struct __Internal
+        {
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsParseScript")]
+            internal static extern global::ChakraSharp.JsErrorCode JsParseScript_0([MarshalAs(UnmanagedType.LPStr)] string script, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsParseScriptWithAttributes")]
+            internal static extern global::ChakraSharp.JsErrorCode JsParseScriptWithAttributes_0([MarshalAs(UnmanagedType.LPStr)] string script, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::ChakraSharp.JsParseScriptAttributes parseAttributes, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsRunScript")]
+            internal static extern global::ChakraSharp.JsErrorCode JsRunScript_0([MarshalAs(UnmanagedType.LPStr)] string script, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsExperimentalApiRunModule")]
+            internal static extern global::ChakraSharp.JsErrorCode JsExperimentalApiRunModule_0([MarshalAs(UnmanagedType.LPStr)] string script, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsSerializeScript")]
+            internal static extern global::ChakraSharp.JsErrorCode JsSerializeScript_0([MarshalAs(UnmanagedType.LPStr)] string script, byte* buffer, uint* bufferSize);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsParseSerializedScriptWithCallback")]
+            internal static extern global::ChakraSharp.JsErrorCode JsParseSerializedScriptWithCallback_0(global::System.IntPtr scriptLoadCallback, global::System.IntPtr scriptUnloadCallback, byte* buffer, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsRunSerializedScriptWithCallback")]
+            internal static extern global::ChakraSharp.JsErrorCode JsRunSerializedScriptWithCallback_0(global::System.IntPtr scriptLoadCallback, global::System.IntPtr scriptUnloadCallback, byte* buffer, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsParseSerializedScript")]
+            internal static extern global::ChakraSharp.JsErrorCode JsParseSerializedScript_0([MarshalAs(UnmanagedType.LPStr)] string script, byte* buffer, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsRunSerializedScript")]
+            internal static extern global::ChakraSharp.JsErrorCode JsRunSerializedScript_0([MarshalAs(UnmanagedType.LPStr)] string script, byte* buffer, ulong sourceContext, [MarshalAs(UnmanagedType.LPStr)] string sourceUrl, global::System.IntPtr* result);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsGetPropertyIdFromName")]
+            internal static extern global::ChakraSharp.JsErrorCode JsGetPropertyIdFromName_0([MarshalAs(UnmanagedType.LPStr)] string name, global::System.IntPtr* propertyId);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsGetPropertyNameFromId")]
+            internal static extern global::ChakraSharp.JsErrorCode JsGetPropertyNameFromId_0(global::System.IntPtr propertyId, char** name);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsPointerToString")]
+            internal static extern global::ChakraSharp.JsErrorCode JsPointerToString_0([MarshalAs(UnmanagedType.LPStr)] string stringValue, ulong stringLength, global::System.IntPtr* value);
+
+            [SuppressUnmanagedCodeSecurity]
+            [DllImport("ChakraCore", CallingConvention = global::System.Runtime.InteropServices.CallingConvention.Cdecl,
+                EntryPoint="JsStringToPointer")]
+            internal static extern global::ChakraSharp.JsErrorCode JsStringToPointer_0(global::System.IntPtr value, char** stringValue, uint* stringLength);
+        }
+
+        // <summary>Parses a script and returns a function representing the script.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="script">The script to parse.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="result">A function representing the script code.</param>
+        public static global::ChakraSharp.JsErrorCode JsParseScript(string script, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg3 = &_result;
+            var __ret = __Internal.JsParseScript_0(script, sourceContext, sourceUrl, __arg3);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Parses a script and returns a function representing the script.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="script">The script to parse.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="parseAttributes">Attribute mask for parsing the script</param>
+        // <param name="result">A function representing the script code.</param>
+        public static global::ChakraSharp.JsErrorCode JsParseScriptWithAttributes(string script, ulong sourceContext, string sourceUrl, global::ChakraSharp.JsParseScriptAttributes parseAttributes, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg4 = &_result;
+            var __ret = __Internal.JsParseScriptWithAttributes_0(script, sourceContext, sourceUrl, parseAttributes, __arg4);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Executes a script.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="script">The script to run.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="result">The result of the script, if any. This parameter can be null.</param>
+        public static global::ChakraSharp.JsErrorCode JsRunScript(string script, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg3 = &_result;
+            var __ret = __Internal.JsRunScript_0(script, sourceContext, sourceUrl, __arg3);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Executes a module.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="script">The module script to parse and execute.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
+        // <param name="sourceUrl">The location the module script came from.</param>
+        // <param name="result">The result of executing the module script, if any. This parameter can be null.</param>
+        public static global::ChakraSharp.JsErrorCode JsExperimentalApiRunModule(string script, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg3 = &_result;
+            var __ret = __Internal.JsExperimentalApiRunModule_0(script, sourceContext, sourceUrl, __arg3);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Serializes a parsed script to a buffer than can be reused.</summary>
+        // <remarks>JsSerializeScript parses a script and then stores the parsed form of the script in a     runtime-independent format. The serialized script then can be deserialized in any     runtime without requiring the script to be re-parsed.          Requires an active script context.</remarks>
+        // <param name="script">The script to serialize.</param>
+        // <param name="buffer">The buffer to put the serialized script into. Can be null.</param>
+        // <param name="bufferSize">On entry, the size of the buffer, in bytes; on exit, the size of the buffer, in bytes,     required to hold the serialized script.</param>
+        public static global::ChakraSharp.JsErrorCode JsSerializeScript(string script, byte* buffer, ref uint bufferSize)
+        {
+            fixed (uint* __refParamPtr2 = &bufferSize)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsSerializeScript_0(script, buffer, __arg2);
+                return __ret;
+            }
+        }
+
+        // <summary>Parses a serialized script and returns a function representing the script.     Provides the ability to lazy load the script source only if/when it is needed.</summary>
+        // <remarks>Requires an active script context.          The runtime will hold on to the buffer until all instances of any functions created from     the buffer are garbage collected.  It will then call scriptUnloadCallback to inform the     caller it is safe to release.</remarks>
+        // <param name="scriptLoadCallback">Callback called when the source code of the script needs to be loaded.</param>
+        // <param name="scriptUnloadCallback">Callback called when the serialized script and source code are no longer needed.</param>
+        // <param name="buffer">The serialized script.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.     This context will passed into scriptLoadCallback and scriptUnloadCallback.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="result">A function representing the script code.</param>
+        public static global::ChakraSharp.JsErrorCode JsParseSerializedScriptWithCallback(global::ChakraSharp.JsSerializedScriptLoadSourceCallback scriptLoadCallback, global::ChakraSharp.JsSerializedScriptUnloadCallback scriptUnloadCallback, byte* buffer, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            var __arg0 = scriptLoadCallback == null ? global::System.IntPtr.Zero : Marshal.GetFunctionPointerForDelegate(scriptLoadCallback);
+            var __arg1 = scriptUnloadCallback == null ? global::System.IntPtr.Zero : Marshal.GetFunctionPointerForDelegate(scriptUnloadCallback);
+            global::System.IntPtr _result;
+            var __arg5 = &_result;
+            var __ret = __Internal.JsParseSerializedScriptWithCallback_0(__arg0, __arg1, buffer, sourceContext, sourceUrl, __arg5);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Runs a serialized script.     Provides the ability to lazy load the script source only if/when it is needed.</summary>
+        // <remarks>Requires an active script context.          The runtime will hold on to the buffer until all instances of any functions created from     the buffer are garbage collected.  It will then call scriptUnloadCallback to inform the     caller it is safe to release.</remarks>
+        // <param name="scriptLoadCallback">Callback called when the source code of the script needs to be loaded.</param>
+        // <param name="scriptUnloadCallback">Callback called when the serialized script and source code are no longer needed.</param>
+        // <param name="buffer">The serialized script.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.     This context will passed into scriptLoadCallback and scriptUnloadCallback.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="result">The result of running the script, if any. This parameter can be null.</param>
+        public static global::ChakraSharp.JsErrorCode JsRunSerializedScriptWithCallback(global::ChakraSharp.JsSerializedScriptLoadSourceCallback scriptLoadCallback, global::ChakraSharp.JsSerializedScriptUnloadCallback scriptUnloadCallback, byte* buffer, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            var __arg0 = scriptLoadCallback == null ? global::System.IntPtr.Zero : Marshal.GetFunctionPointerForDelegate(scriptLoadCallback);
+            var __arg1 = scriptUnloadCallback == null ? global::System.IntPtr.Zero : Marshal.GetFunctionPointerForDelegate(scriptUnloadCallback);
+            global::System.IntPtr _result;
+            var __arg5 = &_result;
+            var __ret = __Internal.JsRunSerializedScriptWithCallback_0(__arg0, __arg1, buffer, sourceContext, sourceUrl, __arg5);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Parses a serialized script and returns a function representing the script.</summary>
+        // <remarks>Requires an active script context.          The runtime will hold on to the buffer until all instances of any functions created from     the buffer are garbage collected.</remarks>
+        // <param name="script">The script to parse.</param>
+        // <param name="buffer">The serialized script.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="result">A function representing the script code.</param>
+        public static global::ChakraSharp.JsErrorCode JsParseSerializedScript(string script, byte* buffer, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg4 = &_result;
+            var __ret = __Internal.JsParseSerializedScript_0(script, buffer, sourceContext, sourceUrl, __arg4);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Runs a serialized script.</summary>
+        // <remarks>Requires an active script context.          The runtime will hold on to the buffer until all instances of any functions created from     the buffer are garbage collected.</remarks>
+        // <param name="script">The source code of the serialized script.</param>
+        // <param name="buffer">The serialized script.</param>
+        // <param name="sourceContext">A cookie identifying the script that can be used by debuggable script contexts.</param>
+        // <param name="sourceUrl">The location the script came from.</param>
+        // <param name="result">The result of running the script, if any. This parameter can be null.</param>
+        public static global::ChakraSharp.JsErrorCode JsRunSerializedScript(string script, byte* buffer, ulong sourceContext, string sourceUrl, out global::System.IntPtr result)
+        {
+            global::System.IntPtr _result;
+            var __arg4 = &_result;
+            var __ret = __Internal.JsRunSerializedScript_0(script, buffer, sourceContext, sourceUrl, __arg4);
+            result = _result;
+            return __ret;
+        }
+
+        // <summary>Gets the property ID associated with the name.</summary>
+        // <remarks>Property IDs are specific to a context and cannot be used across contexts.          Requires an active script context.</remarks>
+        // <param name="name">The name of the property ID to get or create. The name may consist of only digits.</param>
+        // <param name="propertyId">The property ID in this runtime for the given name.</param>
+        public static global::ChakraSharp.JsErrorCode JsGetPropertyIdFromName(string name, out global::System.IntPtr propertyId)
+        {
+            global::System.IntPtr _propertyId;
+            var __arg1 = &_propertyId;
+            var __ret = __Internal.JsGetPropertyIdFromName_0(name, __arg1);
+            propertyId = _propertyId;
+            return __ret;
+        }
+
+        // <summary>Gets the name associated with the property ID.</summary>
+        // <remarks>Requires an active script context.          The returned buffer is valid as long as the runtime is alive and cannot be used     once the runtime has been disposed.</remarks>
+        // <param name="propertyId">The property ID to get the name of.</param>
+        // <param name="name">The name associated with the property ID.</param>
+        public static global::ChakraSharp.JsErrorCode JsGetPropertyNameFromId(global::System.IntPtr propertyId, char** name)
+        {
+            var __ret = __Internal.JsGetPropertyNameFromId_0(propertyId, name);
+            return __ret;
+        }
+
+        // <summary>Creates a string value from a string pointer.</summary>
+        // <remarks>Requires an active script context.</remarks>
+        // <param name="stringValue">The string pointer to convert to a string value.</param>
+        // <param name="stringLength">The length of the string to convert.</param>
+        // <param name="value">The new string value.</param>
+        public static global::ChakraSharp.JsErrorCode JsPointerToString(string stringValue, ulong stringLength, out global::System.IntPtr value)
+        {
+            global::System.IntPtr _value;
+            var __arg2 = &_value;
+            var __ret = __Internal.JsPointerToString_0(stringValue, stringLength, __arg2);
+            value = _value;
+            return __ret;
+        }
+
+        // <summary>Retrieves the string pointer of a string value.</summary>
+        // <remarks>This function retrieves the string pointer of a string value. It will fail with     JsErrorInvalidArgument if the type of the value is not string. The lifetime     of the string returned will be the same as the lifetime of the value it came from, however     the string pointer is not considered a reference to the value (and so will not keep it     from being collected).          Requires an active script context.</remarks>
+        // <param name="value">The string value to convert to a string pointer.</param>
+        // <param name="stringValue">The string pointer.</param>
+        // <param name="stringLength">The length of the string.</param>
+        public static global::ChakraSharp.JsErrorCode JsStringToPointer(global::System.IntPtr value, char** stringValue, out uint stringLength)
+        {
+            fixed (uint* __refParamPtr2 = &stringLength)
+            {
+                var __arg2 = __refParamPtr2;
+                var __ret = __Internal.JsStringToPointer_0(value, stringValue, __arg2);
+                return __ret;
             }
         }
     }
@@ -3218,14 +3399,7 @@ namespace ChakraSharp
         }
 
         // <summary>List all breakpoints in the current runtime.</summary>
-        // <remarks>
-        // <para>[{</para>
-        // <para>&quot;breakpointId&quot; : 1,</para>
-        // <para>&quot;scriptId&quot; : 1,</para>
-        // <para>&quot;line&quot; : 0,</para>
-        // <para>&quot;column&quot; : 62</para>
-        // <para>}]</para>
-        // </remarks>
+        // <remarks>[{         &quot;breakpointId&quot; : 1,         &quot;scriptId&quot; : 1,         &quot;line&quot; : 0,         &quot;column&quot; : 62     }]</remarks>
         // <param name="breakpoints">Array of breakpoints.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetBreakpoints(out global::System.IntPtr breakpoints)
         {
@@ -3237,13 +3411,7 @@ namespace ChakraSharp
         }
 
         // <summary>Sets breakpoint in the specified script at give location.</summary>
-        // <remarks>
-        // <para>{</para>
-        // <para>&quot;breakpointId&quot; : 1,</para>
-        // <para>&quot;line&quot; : 2,</para>
-        // <para>&quot;column&quot; : 4</para>
-        // <para>}</para>
-        // </remarks>
+        // <remarks>{         &quot;breakpointId&quot; : 1,         &quot;line&quot; : 2,         &quot;column&quot; : 4     }</remarks>
         // <param name="scriptId">Id of script from JsDiagGetScripts or JsDiagGetSource to put breakpoint.</param>
         // <param name="lineNumber">0 based line number to put breakpoint.</param>
         // <param name="columnNumber">0 based column number to put breakpoint.</param>
@@ -3299,20 +3467,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets list of scripts.</summary>
-        // <remarks>
-        // <para>[{</para>
-        // <para>&quot;scriptId&quot; : 2,</para>
-        // <para>&quot;fileName&quot; : &quot;c:\\Test\\Test.js&quot;,</para>
-        // <para>&quot;lineCount&quot; : 4,</para>
-        // <para>&quot;sourceLength&quot; : 111</para>
-        // <para>}, {</para>
-        // <para>&quot;scriptId&quot; : 3,</para>
-        // <para>&quot;parentScriptId&quot; : 2,</para>
-        // <para>&quot;scriptType&quot; : &quot;eval code&quot;,</para>
-        // <para>&quot;lineCount&quot; : 1,</para>
-        // <para>&quot;sourceLength&quot; : 12</para>
-        // <para>}]</para>
-        // </remarks>
+        // <remarks>[{         &quot;scriptId&quot; : 2,         &quot;fileName&quot; : &quot;c:\\Test\\Test.js&quot;,         &quot;lineCount&quot; : 4,         &quot;sourceLength&quot; : 111       }, {         &quot;scriptId&quot; : 3,         &quot;parentScriptId&quot; : 2,         &quot;scriptType&quot; : &quot;eval code&quot;,         &quot;lineCount&quot; : 1,         &quot;sourceLength&quot; : 12     }]</remarks>
         // <param name="scriptsArray">Array of script objects.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetScripts(out global::System.IntPtr scriptsArray)
         {
@@ -3324,15 +3479,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets source for a specific script identified by scriptId from JsDiagGetScripts.</summary>
-        // <remarks>
-        // <para>{</para>
-        // <para>&quot;scriptId&quot; : 1,</para>
-        // <para>&quot;fileName&quot; : &quot;c:\\Test\\Test.js&quot;,</para>
-        // <para>&quot;lineCount&quot; : 12,</para>
-        // <para>&quot;sourceLength&quot; : 15154,</para>
-        // <para>&quot;source&quot; : &quot;var x = 1;&quot;</para>
-        // <para>}</para>
-        // </remarks>
+        // <remarks>{         &quot;scriptId&quot; : 1,         &quot;fileName&quot; : &quot;c:\\Test\\Test.js&quot;,         &quot;lineCount&quot; : 12,         &quot;sourceLength&quot; : 15154,         &quot;source&quot; : &quot;var x = 1;&quot;     }</remarks>
         // <param name="scriptId">Id of the script.</param>
         // <param name="source">Source object.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetSource(uint scriptId, out global::System.IntPtr source)
@@ -3345,16 +3492,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the source information for a function object.</summary>
-        // <remarks>
-        // <para>{</para>
-        // <para>&quot;scriptId&quot; : 1,</para>
-        // <para>&quot;fileName&quot; : &quot;c:\\Test\\Test.js&quot;,</para>
-        // <para>&quot;line&quot; : 1,</para>
-        // <para>&quot;column&quot; : 2,</para>
-        // <para>&quot;firstStatementLine&quot; : 6,</para>
-        // <para>&quot;firstStatementColumn&quot; : 0</para>
-        // <para>}</para>
-        // </remarks>
+        // <remarks>{         &quot;scriptId&quot; : 1,         &quot;fileName&quot; : &quot;c:\\Test\\Test.js&quot;,         &quot;line&quot; : 1,         &quot;column&quot; : 2,         &quot;firstStatementLine&quot; : 6,         &quot;firstStatementColumn&quot; : 0     }</remarks>
         // <param name="function">JavaScript function.</param>
         // <param name="functionPosition">Function position - scriptId, start line, start column, line number of first statement, column number of first statement.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetFunctionPosition(global::System.IntPtr function, out global::System.IntPtr functionPosition)
@@ -3367,17 +3505,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the stack trace information.</summary>
-        // <remarks>
-        // <para>[{</para>
-        // <para>&quot;index&quot; : 0,</para>
-        // <para>&quot;scriptId&quot; : 2,</para>
-        // <para>&quot;line&quot; : 3,</para>
-        // <para>&quot;column&quot; : 0,</para>
-        // <para>&quot;sourceLength&quot; : 9,</para>
-        // <para>&quot;sourceText&quot; : &quot;var x = 1&quot;,</para>
-        // <para>&quot;functionHandle&quot; : 1</para>
-        // <para>}]</para>
-        // </remarks>
+        // <remarks>[{         &quot;index&quot; : 0,         &quot;scriptId&quot; : 2,         &quot;line&quot; : 3,         &quot;column&quot; : 0,         &quot;sourceLength&quot; : 9,         &quot;sourceText&quot; : &quot;var x = 1&quot;,         &quot;functionHandle&quot; : 1     }]</remarks>
         // <param name="stackTrace">Stack trace information.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetStackTrace(out global::System.IntPtr stackTrace)
         {
@@ -3389,62 +3517,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the list of properties corresponding to the frame.</summary>
-        // <remarks>
-        // <para>propertyAttributes is a bit mask of</para>
-        // <para>NONE = 0x1,</para>
-        // <para>HAVE_CHILDRENS = 0x2,</para>
-        // <para>READ_ONLY_VALUE = 0x4,</para>
-        // <para></para>
-        // <para>{</para>
-        // <para>&quot;thisObject&quot;: {</para>
-        // <para>&quot;name&quot;: &quot;this&quot;,</para>
-        // <para>&quot;type&quot; : &quot;object&quot;,</para>
-        // <para>&quot;className&quot; : &quot;Object&quot;,</para>
-        // <para>&quot;display&quot; : &quot;{...}&quot;,</para>
-        // <para>&quot;propertyAttributes&quot; : 1,</para>
-        // <para>&quot;handle&quot; : 306</para>
-        // <para>},</para>
-        // <para>&quot;exception&quot; : {</para>
-        // <para>&quot;name&quot; : &quot;{exception}&quot;,</para>
-        // <para>&quot;type&quot; : &quot;object&quot;,</para>
-        // <para>&quot;display&quot; : &quot;'a' is undefined&quot;,</para>
-        // <para>&quot;className&quot; : &quot;Error&quot;,</para>
-        // <para>&quot;propertyAttributes&quot; : 1,</para>
-        // <para>&quot;handle&quot; : 307</para>
-        // <para>}</para>
-        // <para>&quot;arguments&quot; : {</para>
-        // <para>&quot;name&quot; : &quot;arguments&quot;,</para>
-        // <para>&quot;type&quot; : &quot;object&quot;,</para>
-        // <para>&quot;display&quot; : &quot;{...}&quot;,</para>
-        // <para>&quot;className&quot; : &quot;Object&quot;,</para>
-        // <para>&quot;propertyAttributes&quot; : 1,</para>
-        // <para>&quot;handle&quot; : 190</para>
-        // <para>},</para>
-        // <para>&quot;returnValue&quot; : {</para>
-        // <para>&quot;name&quot; : &quot;[Return value]&quot;,</para>
-        // <para>&quot;type&quot; : &quot;undefined&quot;,</para>
-        // <para>&quot;propertyAttributes&quot; : 0,</para>
-        // <para>&quot;handle&quot; : 192</para>
-        // <para>},</para>
-        // <para>&quot;functionCallsReturn&quot; : [{</para>
-        // <para>&quot;name&quot; : &quot;[foo1 returned]&quot;,</para>
-        // <para>&quot;type&quot; : &quot;number&quot;,</para>
-        // <para>&quot;value&quot; : 1,</para>
-        // <para>&quot;propertyAttributes&quot; : 2,</para>
-        // <para>&quot;handle&quot; : 191</para>
-        // <para>}</para>
-        // <para>],</para>
-        // <para>&quot;locals&quot; : [],</para>
-        // <para>&quot;scopes&quot; : [{</para>
-        // <para>&quot;index&quot; : 0,</para>
-        // <para>&quot;handle&quot; : 193</para>
-        // <para>}</para>
-        // <para>],</para>
-        // <para>&quot;globals&quot; : {</para>
-        // <para>&quot;handle&quot; : 194</para>
-        // <para>}</para>
-        // <para>}</para>
-        // </remarks>
+        // <remarks>propertyAttributes is a bit mask of         NONE = 0x1,         HAVE_CHILDRENS = 0x2,         READ_ONLY_VALUE = 0x4,         IN_TDZ = 0x8,          {         &quot;thisObject&quot;: {             &quot;name&quot;: &quot;this&quot;,             &quot;type&quot; : &quot;object&quot;,             &quot;className&quot; : &quot;Object&quot;,             &quot;display&quot; : &quot;{...}&quot;,             &quot;propertyAttributes&quot; : 1,             &quot;handle&quot; : 306         },         &quot;exception&quot; : {             &quot;name&quot; : &quot;{exception}&quot;,             &quot;type&quot; : &quot;object&quot;,             &quot;display&quot; : &quot;'a' is undefined&quot;,             &quot;className&quot; : &quot;Error&quot;,             &quot;propertyAttributes&quot; : 1,             &quot;handle&quot; : 307         }         &quot;arguments&quot; : {             &quot;name&quot; : &quot;arguments&quot;,             &quot;type&quot; : &quot;object&quot;,             &quot;display&quot; : &quot;{...}&quot;,             &quot;className&quot; : &quot;Object&quot;,             &quot;propertyAttributes&quot; : 1,             &quot;handle&quot; : 190         },         &quot;returnValue&quot; : {             &quot;name&quot; : &quot;[Return value]&quot;,             &quot;type&quot; : &quot;undefined&quot;,             &quot;propertyAttributes&quot; : 0,             &quot;handle&quot; : 192         },         &quot;functionCallsReturn&quot; : [{                 &quot;name&quot; : &quot;[foo1 returned]&quot;,                 &quot;type&quot; : &quot;number&quot;,                 &quot;value&quot; : 1,                 &quot;propertyAttributes&quot; : 2,                 &quot;handle&quot; : 191             }         ],         &quot;locals&quot; : [],         &quot;scopes&quot; : [{                 &quot;index&quot; : 0,                 &quot;handle&quot; : 193             }         ],         &quot;globals&quot; : {             &quot;handle&quot; : 194         }     }</remarks>
         // <param name="stackFrameIndex">Index of stack frame from JsDiagGetStackTrace.</param>
         // <param name="properties">Object of properties array (properties, scopes and globals).</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetStackProperties(uint stackFrameIndex, out global::System.IntPtr properties)
@@ -3472,16 +3545,7 @@ namespace ChakraSharp
         }
 
         // <summary>Gets the object corresponding to handle.</summary>
-        // <remarks>
-        // <para>{</para>
-        // <para>&quot;scriptId&quot; : 24,</para>
-        // <para>&quot;line&quot; : 1,</para>
-        // <para>&quot;column&quot; : 63,</para>
-        // <para>&quot;name&quot; : &quot;foo&quot;,</para>
-        // <para>&quot;type&quot; : &quot;function&quot;,</para>
-        // <para>&quot;handle&quot; : 2</para>
-        // <para>}</para>
-        // </remarks>
+        // <remarks>{         &quot;scriptId&quot; : 24,          &quot;line&quot; : 1,          &quot;column&quot; : 63,          &quot;name&quot; : &quot;foo&quot;,          &quot;type&quot; : &quot;function&quot;,          &quot;handle&quot; : 2     }</remarks>
         // <param name="objectHandle">Handle of object.</param>
         // <param name="handleObject">Object corresponding to the handle.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagGetObjectFromHandle(uint objectHandle, out global::System.IntPtr handleObject)
@@ -3494,30 +3558,10 @@ namespace ChakraSharp
         }
 
         // <summary>Evaluates an expression on given frame.</summary>
-        // <remarks>
-        // <para>evalResult when evaluating 'this' and return is JsNoError</para>
-        // <para>{</para>
-        // <para>&quot;name&quot; : &quot;this&quot;,</para>
-        // <para>&quot;type&quot; : &quot;object&quot;,</para>
-        // <para>&quot;className&quot; : &quot;Object&quot;,</para>
-        // <para>&quot;display&quot; : &quot;{...}&quot;,</para>
-        // <para>&quot;propertyAttributes&quot; : 1,</para>
-        // <para>&quot;handle&quot; : 18</para>
-        // <para>}</para>
-        // <para></para>
-        // <para>evalResult when evaluating a script which throws JavaScript error and return is JsErrorScriptException</para>
-        // <para>{</para>
-        // <para>&quot;name&quot; : &quot;a.b.c&quot;,</para>
-        // <para>&quot;type&quot; : &quot;object&quot;,</para>
-        // <para>&quot;className&quot; : &quot;Error&quot;,</para>
-        // <para>&quot;display&quot; : &quot;'a' is undefined&quot;,</para>
-        // <para>&quot;propertyAttributes&quot; : 1,</para>
-        // <para>&quot;handle&quot; : 18</para>
-        // <para>}</para>
-        // </remarks>
+        // <remarks>evalResult when evaluating 'this' and return is JsNoError     {         &quot;name&quot; : &quot;this&quot;,         &quot;type&quot; : &quot;object&quot;,         &quot;className&quot; : &quot;Object&quot;,         &quot;display&quot; : &quot;{...}&quot;,         &quot;propertyAttributes&quot; : 1,         &quot;handle&quot; : 18     }     evalResult when evaluating a script which throws JavaScript error and return is JsErrorScriptException     {         &quot;name&quot; : &quot;a.b.c&quot;,         &quot;type&quot; : &quot;object&quot;,         &quot;className&quot; : &quot;Error&quot;,         &quot;display&quot; : &quot;'a' is undefined&quot;,         &quot;propertyAttributes&quot; : 1,         &quot;handle&quot; : 18     }</remarks>
         // <param name="expression">Javascript String or ArrayBuffer (incl. ExternalArrayBuffer).</param>
         // <param name="stackFrameIndex">Index of stack frame on which to evaluate the expression.</param>
-        // <param name="parseAttributes">Defines how `expression` (JsValueRef) should be parsed. - `JsParseScriptAttributeNone` when `expression` is a Utf8 encoded ArrayBuffer and/or a Javascript String (encoding independent) - `JsParseScriptAttributeArrayBufferIsUtf16Encoded` when `expression` is Utf16 Encoded ArrayBuffer - `JsParseScriptAttributeLibraryCode` has no use for this function and has similar effect with `JsParseScriptAttributeNone`</param>
+        // <param name="parseAttributes">Defines how `expression` (JsValueRef) should be parsed.     - `JsParseScriptAttributeNone` when `expression` is a Utf8 encoded ArrayBuffer and/or a Javascript String (encoding independent)     - `JsParseScriptAttributeArrayBufferIsUtf16Encoded` when `expression` is Utf16 Encoded ArrayBuffer     - `JsParseScriptAttributeLibraryCode` has no use for this function and has similar effect with `JsParseScriptAttributeNone`</param>
         // <param name="forceSetValueProp">Forces the result to contain the raw value of the expression result.</param>
         // <param name="evalResult">Result of evaluation.</param>
         public static global::ChakraSharp.JsErrorCode JsDiagEvaluate(global::System.IntPtr expression, uint stackFrameIndex, global::ChakraSharp.JsParseScriptAttributes parseAttributes, bool forceSetValueProp, out global::System.IntPtr evalResult)
@@ -3556,7 +3600,7 @@ namespace ChakraSharp
         // <remarks>See JsCreateRuntime for additional information.</remarks>
         // <param name="attributes">The attributes of the runtime to be created.</param>
         // <param name="infoUri">The uri where the recorded Time-Travel data should be loaded from.</param>
-        // <param name="enableDebugging">A flag to enable addtional debugging operation support during replay.</param>
+        // <param name="enableDebugging">A flag to enable additional debugging operation support during replay.</param>
         // <param name="openResourceStream">The TTDOpenResourceStreamCallback function for generating a JsTTDStreamHandle to read/write serialized data.</param>
         // <param name="readBytesFromStream">The JsTTDReadBytesFromStreamCallback function for reading bytes from a JsTTDStreamHandle.</param>
         // <param name="flushAndCloseStream">The JsTTDFlushAndCloseStreamCallback function for flushing and closing a JsTTDStreamHandle as needed.</param>
@@ -3624,7 +3668,7 @@ namespace ChakraSharp
             return __ret;
         }
 
-        // <summary>TTD API -- may change in future versions:     Notify the Js runtime we are at a safe yield point in the event loop (i.e. no locals on the stack and we can proccess as desired).</summary>
+        // <summary>TTD API -- may change in future versions:     Notify the Js runtime we are at a safe yield point in the event loop (i.e. no locals on the stack and we can process as desired).</summary>
         public static global::ChakraSharp.JsErrorCode JsTTDNotifyYield()
         {
             var __ret = __Internal.JsTTDNotifyYield_0();
@@ -3686,7 +3730,7 @@ namespace ChakraSharp
             return __ret;
         }
 
-        // <summary>TTD API -- may change in future versions:     A check for unimplmented TTD actions in the host.     This API is a TEMPORARY API while we complete the implementation of TTD support in the Node host and will be deleted once that is complete.</summary>
+        // <summary>TTD API -- may change in future versions:     A check for unimplemented TTD actions in the host.     This API is a TEMPORARY API while we complete the implementation of TTD support in the Node host and will be deleted once that is complete.</summary>
         // <param name="msg">The message to print if we should be catching this as a TTD operation.</param>
         public static global::ChakraSharp.JsErrorCode JsTTDCheckAndAssertIfTTDRunning(string msg)
         {
